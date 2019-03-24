@@ -1,20 +1,65 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@{
+    ViewData["Title"] = "Reddit";
+}
 
+@model AccountLess.Models.Multireddit
+@{string multiredditLink = "http://reddit.com/r/";}
 <div>
+    <br />
     <div class="row">
-        Your Multireddit: 
+        Your Multireddit:
+
+        @foreach (var subReddit in Model.subreddits)
+        {
+            multiredditLink += subReddit + "+";
+
+        }
+        @{ multiredditLink = multiredditLink.Substring(0, multiredditLink.Length - 1);}
+        <a href=@multiredditLink target="_blank">@multiredditLink </a>
 
     </div>
-    
+
     <div class="row">
+        <div class="col-lg-8 col-md-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Subreddit</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var subReddit in Model.subreddits)
+                    {
+                        <tr>
+                            <td><a href="http://reddit.com/r/@subReddit" target="_blank">@subReddit</a></td>
+                            @using (Html.BeginForm("deleteSubreddit", "Sites", FormMethod.Post, new { }))
+                            {
+                                <td>
+                                    <input class="hidden" value="@subReddit" name="subreddit" id="subreddit" />
+                                    <input type="submit" value="Delete" class="btn-sm btn-danger" />
+                                </td>
+                            }
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    @using (Html.BeginForm("addSubreddit", "Sites", FormMethod.Post, new { }))
+    {
+    <div class="row">
+        <div class="col-lg-8 col-md-8">
             Add a Subreddit
-        <input type="text" />
-    
-    </div>
-    <input type="button" class="btn btn-sm" value="Add" />
-    </div>
+            <input type="text" name="subreddit" id="subreddit" />
+            <input type="submit" class="btn btn-sm" value="Add" />
+        </div>
 
-    @{
+    </div>
     }
+</div>
+
+@{
+}

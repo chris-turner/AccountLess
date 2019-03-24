@@ -3,38 +3,51 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using AccountLess.Models;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AccountLess.Controllers
 {
     public class SitesController : Controller
     {
-        // GET: /<controller>/
         public IActionResult Index()
         {
             return View();
         }
-        //
-        // GET: /Site/Reddit?u='x12345'
-        public IActionResult Reddit(string u)
+        
+       
+        public IActionResult Reddit(string u = "227126EF-E405-4302-AA80-82773149DA1D")
         {
             //u is the user ID
             //get multireddit for the userid
+            RedditDataAccess rda = new RedditDataAccess();
+            return View(rda.getMultireddit(u));
+        }
+
+        
+        [HttpPost]
+        public IActionResult addSubreddit(string subreddit)
+        {
+            string u = "227126EF-E405-4302-AA80-82773149DA1D";
+            RedditDataAccess rda = new RedditDataAccess();
+            rda.addSubreddit(u, subreddit.ToLower());
+            return Redirect("/Sites/Reddit");
+        }
+
+        [HttpPost]
+        public IActionResult deleteSubreddit(string subreddit)
+        {
+            string u = "227126EF-E405-4302-AA80-82773149DA1D";
+            RedditDataAccess rda = new RedditDataAccess();
+            rda.deleteSubreddit(u, subreddit);
+            return Redirect("/Sites/Reddit");
+        }
+
+        public IActionResult YouTube()
+        {
             return View();
         }
-
-        //
-        // GET: /Store/Browse?genre=Disco
-        public string Browse(string genre)
-        {
-            string message = HttpUtility.HtmlEncode("Store.Browse, Genre = "
-        + genre);
-
-            return message;
-        }
-
 
     }
 }
