@@ -31,7 +31,12 @@ namespace AccountLess.Controllers
         {
             string u = "227126EF-E405-4302-AA80-82773149DA1D";
             RedditDataAccess rda = new RedditDataAccess();
-            rda.addSubreddit(u, subreddit.ToLower());
+            bool isValidSubreddit = rda.addSubreddit(u, subreddit.ToLower());
+            if (!isValidSubreddit)
+            {
+                ViewData["ErrorMessage"] = "Invalid Subreddit";
+
+            }
             return Redirect("/Sites/Reddit");
         }
 

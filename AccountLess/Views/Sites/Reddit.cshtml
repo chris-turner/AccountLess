@@ -1,8 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Reddit";
 }
-
 @model AccountLess.Models.Multireddit
+
 @{string multiredditLink = "http://reddit.com/r/";}
 <div>
     <br />
@@ -16,7 +16,8 @@
         }
         @{ multiredditLink = multiredditLink.Substring(0, multiredditLink.Length - 1);}
         <a href=@multiredditLink target="_blank">@multiredditLink </a>
-        Old: <a href=@multiredditLink.Replace("http://", "http://old."); target="_blank">@multiredditLink </a>
+        <br/>
+        Old: <a href=@multiredditLink.Replace("http://", "http://old.") ; target="_blank">@multiredditLink.Replace("http://", "http://old.") </a>
 
     </div>
 
@@ -52,6 +53,7 @@
     @using (Html.BeginForm("addSubreddit", "Sites", FormMethod.Post, new { }))
     {
     <div class="row">
+        @ViewData["ErrorMessage"]
         <div class="col-lg-8 col-md-8">
             Add a Subreddit
             <input type="text" name="subreddit" id="subreddit" />

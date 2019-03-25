@@ -24,7 +24,7 @@ namespace AccountLess.Models
             return mr;
         }
 
-        public void addSubreddit(string userID, string subreddit)
+        public bool addSubreddit(string userID, string subreddit)
         {
             bool isValid = validateSubreddit(subreddit);
 
@@ -33,6 +33,9 @@ namespace AccountLess.Models
                 GeneralDataAccess sqlAccess = new GeneralDataAccess();
                 sqlAccess.runSQLQuery($"insert into Reddit(UserID, Subreddit) values ('{userID}', '{subreddit}');");
             }
+
+            return isValid;
+
         }
 
         private bool validateSubreddit(string subreddit)
