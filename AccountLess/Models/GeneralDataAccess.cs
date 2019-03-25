@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace AccountLess.Models
 {
-    public class SqlAccess
+    public class GeneralDataAccess
     {
         private string connectionString = "Data Source=DESKTOP-HOD0O5L\\SQLEXPRESS;Initial Catalog=AccountLess;Integrated Security=True"; //TO DO: add connection string somewhere else (look up best practices for MVC)
         public DataSet GetDataSet(string SQLQuery)
@@ -39,6 +40,17 @@ namespace AccountLess.Models
             conn.Close();
             return rowsAffected;
         }
+
+        public string getJSONFromURL(string url)
+        {
+            string json = "";
+            using (WebClient wc = new WebClient())
+            {
+                json = wc.DownloadString(url);
+            }
+            return json;
+        }
+
 
     }
 }

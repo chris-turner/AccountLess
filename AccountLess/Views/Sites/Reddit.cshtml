@@ -16,6 +16,7 @@
         }
         @{ multiredditLink = multiredditLink.Substring(0, multiredditLink.Length - 1);}
         <a href=@multiredditLink target="_blank">@multiredditLink </a>
+        Old: <a href=@multiredditLink.Replace("http://", "http://old."); target="_blank">@multiredditLink </a>
 
     </div>
 
