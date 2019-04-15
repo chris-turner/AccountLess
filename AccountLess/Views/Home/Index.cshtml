@@ -1,26 +1,108 @@
 ﻿@{
     ViewData["Title"] = "Home";
+
+    //if (System.Web.HttpContext.Current.Session["UserID"] == null)
+
+        Layout = null;
+   
+
 }
 
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AccountLess</title>
 
-<div class="row">
-    <div class="col-md-3">
-        <h1>AccountLess</h1>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/loginSS.css" />
+
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+
+    <partial name="_CookieConsentPartial" />
+
+    <div class="container body-content">
+
+        <div class="login-page">
+            <div class="form">
+                <form class="register-form">
+                    <input type="text" placeholder="name" />
+                    <input type="password" placeholder="password" />
+                    <input type="text" placeholder="email address" />
+                    <button>create</button>
+                    <p class="message">Already registered? <a href="#">Sign In</a></p>
+                </form>
+                <form class="login-form">
+                    <input type="text" placeholder="username" />
+                    <input type="password" placeholder="password" />
+                    <button>login</button>
+                    <p class="message">Not registered? <a href="#">Create an account</a></p>
+                </form>
+            </div>
+        </div>
+        <hr />
+        <footer>
+            <p>&copy; 2019 - AccountLess</p>
+        </footer>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        <h2>Sites</h2>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/js/reddit.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+</body>
+</html>
+
+
+
+@*<div class="row">
+        <div class="col-md-3">
+            <h1>AccountLess</h1>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        @Html.ActionLink("Reddit", "Reddit", "Sites")
+    <div class="row">
+        <div class="col-md-3">
+            <h2>Sites</h2>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-3">
-        @Html.ActionLink("YouTube (coming soon)", "YouTube", "Sites")
+    <div class="row">
+        <div class="col-md-3">
+            @Html.ActionLink("Reddit", "Reddit", "Sites")
+        </div>
     </div>
-</div>
-          
+    <div class="row">
+        <div class="col-md-3">
+            @Html.ActionLink("YouTube (coming soon)", "YouTube", "Sites")
+        </div>
+    </div>*@

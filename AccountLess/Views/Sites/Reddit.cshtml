@@ -1,68 +1,107 @@
 ﻿@{
     ViewData["Title"] = "Reddit";
+
 }
 @model AccountLess.Models.Multireddit
 
+
 @{string multiredditLink = "http://reddit.com/r/";}
-<div>
-    <br />
-    <div class="row">
-        Your Multireddit:
+<div class="container">
 
-        @foreach (var subReddit in Model.subreddits)
+    @if (TempData["ErrorMessage"] != null)
         {
-            multiredditLink += subReddit + "+";
+            string errorMsg = TempData["ErrorMessage"].ToString();
+            TempData["ErrorMessage"] = null;
+        <div class="row" id="subredditAddedStatus">
+            <div class="col-lg-12 col-md-12">
+                <div class="alert alert-danger alert-dismissible show" role="alert" >
+                    <strong>Error</strong>:@errorMsg
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
+            </div>
+        </div>
         }
-        @{ multiredditLink = multiredditLink.Substring(0, multiredditLink.Length - 1);}
-        <a href=@multiredditLink target="_blank">@multiredditLink </a>
-        <br/>
-        Old: <a href=@multiredditLink.Replace("http://", "http://old.") ; target="_blank">@multiredditLink.Replace("http://", "http://old.") </a>
-
-    </div>
-
     <div class="row">
         <div class="col-lg-8 col-md-8">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Subreddit</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var subReddit in Model.subreddits)
-                    {
-                        <tr>
-                            <td><a href="http://reddit.com/r/@subReddit" target="_blank">@subReddit</a></td>
-                            @using (Html.BeginForm("deleteSubreddit", "Sites", FormMethod.Post, new { }))
+                        <h2>Reddit</h2>
+                    </div>
+                </div>
+                <div id="redditLinkContainer">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8">
+                            Your Multireddit:
+
+                            @foreach (var subReddit in Model.subreddits)
                             {
-                                <td>
-                                    <input class="hidden" value="@subReddit" name="subreddit" id="subreddit" />
-                                    <input type="submit" value="Delete" class="btn-sm btn-danger" />
-                                </td>
+                                multiredditLink += subReddit + "+";
+
                             }
-                        </tr>
-                    }
+                            @{ multiredditLink = multiredditLink.Substring(0, multiredditLink.Length - 1);}
 
-                </tbody>
-            </table>
+                            <a href=@multiredditLink target="_blank">View</a>
+                            <br />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8">
+                            Old Reddit Layout: <a href=@multiredditLink.Replace("http://", "http://old.") ; target="_blank">View </a>
 
-        </div>
-    </div>
-    @using (Html.BeginForm("addSubreddit", "Sites", FormMethod.Post, new { }))
-    {
-    <div class="row">
-        @ViewData["ErrorMessage"]
-        <div class="col-lg-8 col-md-8">
-            Add a Subreddit
-            <input type="text" name="subreddit" id="subreddit" />
-            <input type="submit" class="btn btn-sm" value="Add" />
-        </div>
+                        </div>
+                    </div>
+                </div>
 
-    </div>
-    }
-</div>
+                @using (Html.BeginForm("addSubreddit", "Sites", FormMethod.Post, new { }))
+                {
+                    <div class="row">
+                        @ViewData["ErrorMessage"]
+                        <div class="col-lg-8 col-md-8" id="addSubredditDiv">
+                            Add a Subreddit
+                            <input type="text" name="subreddit" id="subreddit" />
+                            <input type="submit" class="btn btn-sm" value="Add" />
+                        </div>
 
-@{
-}
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8" id="multipleSubsLabelDiv">
+                            To enter multiple subreddits at once, separate with + sign. Or paste your entire multireddit link.
+                        </div>
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-lg-7 col-md-7">
+                        <table class="table" id="subredditTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Subreddit</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var subReddit in Model.subreddits)
+                                {
+                                    <tr>
+                                        <td><a href="http://reddit.com/r/@subReddit" target="_blank">@subReddit</a></td>
+                                        @using (Html.BeginForm("deleteSubreddit", "Sites", FormMethod.Post, new { }))
+                                        {
+                                            <td>
+                                                <input class="hidden" value="@subReddit" name="subreddit" id="subreddit" />
+                                                <input type="submit" value="Delete" class="btn-sm btn-danger" />
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+
+            @{
+            }

@@ -32,3 +32,4 @@ C:\Users\chris\source\repos\AccountLess\AccountLess\obj\Debug\netcoreapp2.1\Acco
 C:\Users\chris\source\repos\AccountLess\AccountLess\obj\Debug\netcoreapp2.1\AccountLess.RazorTargetAssemblyInfo.cs
 C:\Users\chris\source\repos\AccountLess\AccountLess\obj\Debug\netcoreapp2.1\AccountLess.csproj.CopyComplete
 C:\Users\chris\source\repos\AccountLess\AccountLess\obj\Debug\netcoreapp2.1\Razor\Views\Sites\YouTube.g.cshtml.cs
+C:\Users\chris\source\repos\AccountLess\AccountLess\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_LoginLayout.g.cshtml.cs

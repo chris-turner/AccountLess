@@ -31,12 +31,26 @@ namespace AccountLess.Controllers
         {
             string u = "227126EF-E405-4302-AA80-82773149DA1D";
             RedditDataAccess rda = new RedditDataAccess();
-            bool isValidSubreddit = rda.addSubreddit(u, subreddit.ToLower());
-            if (!isValidSubreddit)
-            {
-                ViewData["ErrorMessage"] = "Invalid Subreddit";
+            List<String>[] subs = rda.addSubreddit(u, subreddit.ToLower());
 
+            foreach (string sub in subs[0])
+            {
+                TempData["ErrorMessage"] = $"Invalid Subreddit: {sub}\n";
             }
+
+            //int subsAdded = 0;
+            //foreach (string sub in subs[1])
+            //{
+            //    subsAdded += 1;
+            //}
+
+            foreach (string sub in subs[2])
+            {
+                TempData["ErrorMessage"] = $"Duplicate Subreddit: {sub}\n";
+            }
+            
+
+            
             return Redirect("/Sites/Reddit");
         }
 

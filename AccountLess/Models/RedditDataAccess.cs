@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace AccountLess.Models
@@ -24,42 +27,131 @@ namespace AccountLess.Models
             return mr;
         }
 
-        public bool addSubreddit(string userID, string subreddit)
+        public List<string>[] addSubreddit(string userID, string subreddit)
         {
-            bool isValid = validateSubreddit(subreddit);
+            subreddit = Regex.Replace(subreddit, @"\s+", "");
+            List<String>[] subs = validateSubreddit(subreddit);
+            List<string> invalidSubs = subs[0];
+            List<string> validSubs = subs[1];
+            List<string> duplicateSubs = new List<string>();
+            Multireddit mr = getMultireddit(userID);
 
-            if (isValid)
+            if (mr.subreddits.Any(s => s.Contains(subreddit)))
             {
-                GeneralDataAccess sqlAccess = new GeneralDataAccess();
-                sqlAccess.runSQLQuery($"insert into Reddit(UserID, Subreddit) values ('{userID}', '{subreddit}');");
+                validSubs.RemoveAll(sub => sub == subreddit);
+                duplicateSubs.Add(subreddit);
             }
 
-            return isValid;
+
+            if (validSubs.Count > 0)
+            {
+                foreach (string sub in validSubs)
+                {
+                    GeneralDataAccess sqlAccess = new GeneralDataAccess();
+                    sqlAccess.runSQLQuery($"insert into Reddit(UserID, Subreddit) values ('{userID}', '{sub}');");
+                }
+            }
+
+            foreach (string sub in duplicateSubs)
+            {
+                validSubs.Remove(sub);
+            }
+            
+            List<String>[] finalSubs = { invalidSubs, validSubs, duplicateSubs };
+            return finalSubs;
 
         }
 
-        private bool validateSubreddit(string subreddit)
+        private List<string>[] validateSubreddit(string subreddits)
         {
-            GeneralDataAccess gda = new GeneralDataAccess(); 
-            string jsonString  = gda.getJSONFromURL($"https://www.reddit.com/subreddits/search.json?q='subreddit:{subreddit}'&include_over_18=on&limit=1");
+          
+            var regex = new Regex("^[a-zA-Z0-9 ]*$");
+            string redditURL = "reddit.com/r/";
+            if (subreddits.Contains(redditURL))
+            {
+                subreddits = subreddits.Substring(subreddits.IndexOf("reddit.com/r/") + redditURL.Length);
+            }
+            if (subreddits[subreddits.Length - 1] == '/') {
+                subreddits = subreddits.Substring(0, subreddits.Length - 1    );
+            }
+            List<string> subs = subreddits.Split('+').ToList();
+
+            List<string> validSubs = new List<string>();
+            List<string> invalidSubs = new List<string>();
+            
+
+            foreach (string sub in subs)
+            {
+                if (regex.IsMatch(sub))
+                {
+                    validSubs.Add(sub);
+                    
+                }
+                else
+                {
+                    invalidSubs.Add(sub);
+                }
+
+            }
+
+            List<string>[] subredditLists = { invalidSubs, validSubs };
+            return subredditLists;
+
+        }
+
+        //currently not working 100%, returning some valid subreddits as invalid. will have to mess around more
+        private List<string>[]  validateSubredditWithRedditApi(string sub) {
+            List<string> validSubs = new List<string>();
+            List<string> invalidSubs = new List<string>();
+            GeneralDataAccess gda = new GeneralDataAccess();
+            string jsonString = gda.getJSONFromURL($"https://www.reddit.com/subreddits/search.json?q='subreddit:{sub}'&include_over_18=on&limit=1");
             jsonString.IndexOf(",");
             var jsonObj = JsonConvert.DeserializeObject<dynamic>(jsonString);
             string results = jsonObj["data"]["children"].ToString();
+            //
             if (results == "[]")
             {
-                return false;
+                bool isValid = validateSubredditAlt(sub);
+                if (isValid)
+                {
+                    validSubs.Add(sub);
+                }
+                else
+                    invalidSubs.Add(sub);
             }
             else
             {
                 string subName = ((jsonObj["data"]["children"][0]["data"]["url"]).ToString().Replace("{", "")).Replace("}", "");
-                if (subName.ToLower() == $"/r/{subreddit.ToLower()}/")
+                if (subName.ToLower() == $"/r/{sub.ToLower()}/")
                 {
-                    return true;
+                    validSubs.Add(sub);
                 }
                 else
-                    return false;
+                {
+                    bool isValid = validateSubredditAlt(sub);
+                    if (isValid)
+                    {
+                        validSubs.Add(sub);
+                    }
+                    else
+                        invalidSubs.Add(sub);
+                }
             }
 
+            List<string>[] subredditLists = { invalidSubs, validSubs };
+            return subredditLists;
+             
+        }
+
+        private bool validateSubredditAlt(string subreddit) {
+            GeneralDataAccess gda = new GeneralDataAccess();
+            string jsonString = gda.getJSONFromURL($"https://www.reddit.com/subreddits/search.json?q='{subreddit}'&include_over_18=on");
+            if (jsonString.ToLower().Contains($"url\": \"/r/{subreddit.ToLower()}/"))
+            {
+                return true;
+            }
+            else
+                return false;
         }
 
         public void deleteSubreddit(string userID, string subreddit)

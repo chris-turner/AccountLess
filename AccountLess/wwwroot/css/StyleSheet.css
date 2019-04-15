@@ -1,0 +1,19 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+#redditLinkContainer {
+    padding: 20px 0px 20px 0px;
+}
+
+
+#addSubredditDiv {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#multipleSubsLabelDiv {
+    padding-bottom: 15px;
+}
+
+#subredditAddedStatus {
+padding-top:20px;
+}
