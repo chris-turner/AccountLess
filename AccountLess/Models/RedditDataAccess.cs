@@ -12,10 +12,10 @@ namespace AccountLess.Models
 {
     public class RedditDataAccess
     {
-        public static Multireddit mr = new Multireddit();
-
+        
         public Multireddit getMultireddit(string userID)
         {
+            Multireddit mr = new Multireddit();
             mr.userID = Guid.Parse(userID);
             GeneralDataAccess gda = new GeneralDataAccess();
             DataTable mrTable = gda.GetDataSet($"select subreddit from reddit where UserID = '{userID}';").Tables[0];

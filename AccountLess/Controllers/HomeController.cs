@@ -15,6 +15,14 @@ namespace AccountLess.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult Login(string username)
+        {
+            UserDataAccess uda = new UserDataAccess();
+            TempData["UserID"] = uda.getUserIDForUserName(username);
+            return Redirect("/Sites/Reddit");
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

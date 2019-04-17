@@ -17,10 +17,11 @@ namespace AccountLess.Controllers
         }
         
        
-        public IActionResult Reddit(string u = "227126EF-E405-4302-AA80-82773149DA1D")
+        public IActionResult Reddit(string u)
         {
             //u is the user ID
             //get multireddit for the userid
+            u = TempData.Peek("UserID").ToString();
             RedditDataAccess rda = new RedditDataAccess();
             return View(rda.getMultireddit(u));
         }
@@ -29,7 +30,7 @@ namespace AccountLess.Controllers
         [HttpPost]
         public IActionResult addSubreddit(string subreddit)
         {
-            string u = "227126EF-E405-4302-AA80-82773149DA1D";
+            string u = TempData.Peek("UserID").ToString();
             RedditDataAccess rda = new RedditDataAccess();
             List<String>[] subs = rda.addSubreddit(u, subreddit.ToLower());
 
@@ -48,16 +49,14 @@ namespace AccountLess.Controllers
             {
                 TempData["ErrorMessage"] = $"Duplicate Subreddit: {sub}\n";
             }
-            
 
-            
             return Redirect("/Sites/Reddit");
         }
 
         [HttpPost]
         public IActionResult deleteSubreddit(string subreddit)
         {
-            string u = "227126EF-E405-4302-AA80-82773149DA1D";
+            string u = TempData.Peek("UserID").ToString();
             RedditDataAccess rda = new RedditDataAccess();
             rda.deleteSubreddit(u, subreddit);
             return Redirect("/Sites/Reddit");
