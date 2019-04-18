@@ -3,9 +3,7 @@
     {
        
             ViewData["Title"] = "Home";
-
-            //if (System.Web.HttpContext.Current.Session["UserID"] == null)
-
+        
             Layout = null;
 
         
@@ -40,27 +38,98 @@
                 <div class="login-page">
 
                     <div class="form">
-                        @*@using (Html.BeginForm("register", "Home", FormMethod.Post, new { }))
-                            {
-                                <form class="register-form">
-                                    <input type="text" placeholder="name" />
-                                    <input type="password" placeholder="password" disabled/>
-                                    <button>create</button>
-                                    <p class="message">Already have a username? <a href="#">Sign In</a></p>
-                                </form>
-                            }*@
-                        @using (Html.BeginForm("login", "Home", FormMethod.Post, new { }))
+                        @if (TempData["ErrorMessage"] != null && TempData.Peek("ErrorMessage").ToString().Split('+')[1] == "Register")
                         {
-                            <form class="login-form">
-                                <input type="text" placeholder="username" name="username" id="username" />
-                                <input type="password" placeholder="password" disabled />
-                                <button>login</button>
-                                <p class="message"><a href="#">Create a username and password. No email address required.</a></p>
-                            </form>
+                                @using (Html.BeginForm("login", "Home", FormMethod.Post, new { }))
+                                {
+                                    <div id="loginFormRegError">
+                                        <form class="login-form loginPageForm">
+                                            <input type="text" placeholder="username" name="username" id="username" />
+                                            @if (TempData["ErrorMessage"] != null)
+                                            {
+                                                if (TempData.Peek("ErrorMessage").ToString().Split('+')[1] == "Login")
+                                                {
+                                                    <div class="loginErrorMsg">@TempData["ErrorMessage"].ToString().Split('+')[0]</div>
 
+                                                }
+
+                                            }
+                                            <input type="password" placeholder="password" disabled />
+                                            <button>login</button>
+                                            <p class="message"><a id="loginFormRegErrorMessage" href="#">No username? Click here to create one. No email address required.</a></p>
+                                        </form>
+                                    </div>
+
+                                }
+
+                                @using (Html.BeginForm("register", "Home", FormMethod.Post, new { }))
+                                {
+                                    <div id="registerFormWithError">
+                                        <form class="register-form loginPageForm">
+                                            <input type="text" placeholder="username" name="username" id="username" />
+                                            @if (TempData["ErrorMessage"] != null)
+                                            {
+                                                @if (TempData.Peek("ErrorMessage").ToString().Split('+')[1] == "Register")
+                                                {
+                                                    <div class="loginErrorMsg">@TempData["ErrorMessage"].ToString().Split('+')[0]</div>
+
+                                                }
+                                            }
+                                            <input type="password" placeholder="password" disabled />
+                                            <button>create</button>
+                                            <p class="message"> <a id="registerFormWithErrorMessage" href="#">Already have a username? Sign In</a></p>
+                                        </form>
+                                    </div>
+                                }
+
+                                
+                            }
+                            else
+                            {
+                                @using (Html.BeginForm("login", "Home", FormMethod.Post, new { }))
+                                {
+                                    <div id="loginForm">
+                                        <form class="login-form loginPageForm">
+                                            <input type="text" placeholder="username" name="username" id="username" />
+                                            @if (TempData["ErrorMessage"] != null)
+                                            {
+                                                if (TempData.Peek("ErrorMessage").ToString().Split('+')[1] == "Login")
+                                                {
+                                                    <div class="loginErrorMsg">@TempData["ErrorMessage"].ToString().Split('+')[0]</div>
+
+                                                }
+
+                                            }
+                                            <input type="password" placeholder="password" disabled />
+                                            <button>login</button>
+                                            <p class="message"><a id="loginFormMessage" href="#">No username? Click here to create one. No email address required.</a></p>
+                                        </form>
+                                    </div>
+
+                                }
+
+                                @using (Html.BeginForm("register", "Home", FormMethod.Post, new { }))
+                                {
+                                    <div id="registerForm">
+                                        <form class="register-form loginPageForm">
+                                            <input type="text" placeholder="username" name="username" id="username" />
+                                            @if (TempData["ErrorMessage"] != null)
+                                            {
+                                                @if (TempData.Peek("ErrorMessage").ToString().Split('+')[1] == "Register")
+                                                {
+                                                    <div class="loginErrorMsg">@TempData["ErrorMessage"].ToString().Split('+')[0]</div>
+
+                                                }
+                                            }
+                                            <input type="password" placeholder="password" disabled />
+                                            <button>create</button>
+                                            <p class="message"> <a id="registerFormMessage" href="#">Already have a username? Sign In</a></p>
+                                        </form>
+                                    </div>
+                                }
                         }
-                    </div>
-                </div>
+                        </div>
+                        </div>
                 <hr />
                 <footer>
                     <p>&copy; 2019 - AccountLess</p>
@@ -122,7 +191,7 @@ else
 {
 
     <h1>Yo</h1>
-    @TempData["UserID"]
+    @TempData.Peek("UserID")
 }
 
 }

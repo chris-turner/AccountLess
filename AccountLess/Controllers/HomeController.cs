@@ -18,28 +18,59 @@ namespace AccountLess.Controllers
         [HttpPost]
         public IActionResult Login(string username)
         {
-            UserDataAccess uda = new UserDataAccess();
-            TempData["UserID"] = uda.getUserIDForUserName(username);
-            return Redirect("/Sites/Reddit");
+            UserDataAccess uda = new UserDataAccess(); //
+            bool isValidUsername = uda.validateUserName(username, "login");
+            string userID = "";
+            if (isValidUsername)
+            {
+                 userID = uda.getUserIDForUserName(username);
+
+                if (String.IsNullOrEmpty(userID.Trim()))
+                {
+                    TempData["ErrorMessage"] = "Invalid Username+Login";
+                    return Redirect("/Home/Index");
+                }
+                else
+                {
+                    TempData["UserID"] = userID;
+                    return Redirect("/Sites/Reddit");
+                }
+                
+            }
+            else {
+                TempData["UserID"] = null;
+                TempData["ErrorMessage"] = "Invalid Username+Login";
+                return Redirect("/Home/Index");
+            }
+           
         }
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
-
+            ViewData["Message"] = "AccountLess.";
             return View();
         }
 
-        public IActionResult Contact()
+        public IActionResult Logout()
         {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            TempData["UserID"] = null;
+            return Redirect("/Home/Index");
         }
 
-        public IActionResult Privacy()
+        public IActionResult Register(string username)
         {
-            return View();
+            UserDataAccess uda = new UserDataAccess();
+            bool isValidUserName = uda.validateUserName(username, "register");
+            if (isValidUserName)
+            {
+                TempData["UserID"] = uda.registerNewUser(username);
+            }
+            else
+            {
+                TempData["UserID"] = null;
+                TempData["ErrorMessage"] = "Invalid Username+Register";
+            }
+            return Redirect("/Home/Index");
         }
         
 

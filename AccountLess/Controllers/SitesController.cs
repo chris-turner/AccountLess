@@ -21,6 +21,10 @@ namespace AccountLess.Controllers
         {
             //u is the user ID
             //get multireddit for the userid
+            if (TempData.Peek("UserID") == null)
+            {
+                return Redirect("/Home/Index");
+            }
             u = TempData.Peek("UserID").ToString();
             RedditDataAccess rda = new RedditDataAccess();
             return View(rda.getMultireddit(u));
@@ -30,6 +34,10 @@ namespace AccountLess.Controllers
         [HttpPost]
         public IActionResult addSubreddit(string subreddit)
         {
+            if (TempData.Peek("UserID") == null)
+            {
+                return Redirect("/Home/Index");
+            }
             string u = TempData.Peek("UserID").ToString();
             RedditDataAccess rda = new RedditDataAccess();
             List<String>[] subs = rda.addSubreddit(u, subreddit.ToLower());
@@ -56,6 +64,10 @@ namespace AccountLess.Controllers
         [HttpPost]
         public IActionResult deleteSubreddit(string subreddit)
         {
+            if (TempData.Peek("UserID") == null)
+            {
+                return Redirect("/Home/Index");
+            }
             string u = TempData.Peek("UserID").ToString();
             RedditDataAccess rda = new RedditDataAccess();
             rda.deleteSubreddit(u, subreddit);
@@ -64,6 +76,10 @@ namespace AccountLess.Controllers
 
         public IActionResult YouTube()
         {
+             if (TempData.Peek("UserID") == null)
+            {
+                return Redirect("/Home/Index");
+            }
             return View();
         }
 
