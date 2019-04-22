@@ -19,7 +19,6 @@ namespace AccountLess.Controllers
        
         public IActionResult Reddit(string u)
         {
-            //u is the user ID
             //get multireddit for the userid
             if (TempData.Peek("UserID") == null)
             {

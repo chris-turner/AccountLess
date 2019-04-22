@@ -1,9 +1,91 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "YouTube";
+
 }
+@model AccountLess.Models.YoutubeSubscriptions
 
-<h2>YouTube</h2>
 
-Coming Soon...
+<div class="container">
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        string errorMsg = TempData["ErrorMessage"].ToString();
+        <div class="row" id="youtubeChannelAddedStatus">
+            <div class="col-lg-12 col-md-12">
+                <div class="alert alert-danger alert-dismissible show" role="alert">
+                    <strong>Error</strong>:@errorMsg
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-lg-8 col-md-8">
+            <h2>YouTube</h2>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("addYouTubeChannel", "Sites", FormMethod.Post, new { }))
+    {
+        <div class="row">
+            @ViewData["ErrorMessage"]
+            <div class="col-lg-8 col-md-8" id="addYtChannelDiv">
+                Add a Subreddit
+                <input type="text" name="subreddit" id="subreddit" />
+                <input type="submit" class="btn btn-sm" value="Add" />
+            </div>
+
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-7 col-md-7">
+            <table class="table" id="ytChannelTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Channel</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ if (Model.youtubeChannels.Count < 1)
+                        {
+                            <tr>
+                                <td>No channels added yet. </td>
+                                <td> </td>
+                            </tr>
+
+                        }
+                        else
+                        {
+                            foreach (var ytChannel in Model.youtubeChannels)
+                            {
+                                <tr>
+                                    <td><a href="@ytChannel" target="_blank">@ytChannel</a></td>
+                                    @using (Html.BeginForm("deleteYouTubeChannel", "Sites", FormMethod.Post, new { }))
+                                    {
+                                        <td>
+                                            <input class="hidden" value="@ytChannel" name="ytChannel" id="ytChannel" />
+                                            <input type="submit" value="Delete" class="btn-sm btn-danger" />
+                                        </td>
+                                    }
+                                </tr>
+                            }
+
+                        }
+
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+@{
+}
