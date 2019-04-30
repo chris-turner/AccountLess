@@ -28,13 +28,20 @@
         </div>
     </div>
 
+    <div class="row" id="ytFeed">
+        <div class="col-lg-8 col-md-8">
+            <h3>Your Feed</h3>
+        </div>
+
+    </div>
+
     @using (Html.BeginForm("addYouTubeChannel", "Sites", FormMethod.Post, new { }))
     {
         <div class="row">
             @ViewData["ErrorMessage"]
             <div class="col-lg-8 col-md-8" id="addYtChannelDiv">
-                Add a Subreddit
-                <input type="text" name="subreddit" id="subreddit" />
+                Paste the YouTube channel link here
+                <input type="text" name="ytChannel" id="subreddit" />
                 <input type="submit" class="btn btn-sm" value="Add" />
             </div>
 

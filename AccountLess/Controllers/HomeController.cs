@@ -33,7 +33,7 @@ namespace AccountLess.Controllers
                 else
                 {
                     TempData["UserID"] = userID;
-                    return Redirect("/Sites/Reddit");
+                    return Redirect("/Home/Index");
                 }
                 
             }

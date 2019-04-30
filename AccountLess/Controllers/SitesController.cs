@@ -17,8 +17,9 @@ namespace AccountLess.Controllers
         }
         
        
-        public IActionResult Reddit(string u)
+        public IActionResult Reddit()
         {
+            string u;
             //get multireddit for the userid
             if (TempData.Peek("UserID") == null)
             {
@@ -75,11 +76,14 @@ namespace AccountLess.Controllers
 
         public IActionResult YouTube()
         {
+            string u;
              if (TempData.Peek("UserID") == null)
             {
                 return Redirect("/Home/Index");
             }
-            return View();
+            u = TempData.Peek("UserID").ToString();
+            YouTubeDataAccess yda = new YouTubeDataAccess();
+            return View(yda.getYouTubeSubscriptions(u));
         }
 
     }
