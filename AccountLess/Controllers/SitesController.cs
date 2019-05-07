@@ -83,7 +83,7 @@ namespace AccountLess.Controllers
             }
             u = TempData.Peek("UserID").ToString();
             YouTubeDataAccess yda = new YouTubeDataAccess();
-            return View(yda.getYouTubeSubscriptions(u));
+            return View(yda.getYouTubeRssFeed());
         }
 
     }
