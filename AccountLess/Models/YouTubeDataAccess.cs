@@ -20,36 +20,51 @@ namespace AccountLess.Models
             return ys;
         }
 
-        public SyndicationFeed getYouTubeRssFeed()
+        public YouTubeVideoFeed getYouTubeRssFeed()
         {
             string[] youTubeChannels = {
-            "https://www.youtube.com/user/LinusTechTips",
-            "https://www.youtube.com/user/LiveattheBikecom" };
-            List<SyndicationItem> ytFeed = new List<SyndicationItem>();
+                "https://www.youtube.com/feeds/videos.xml?channel_id=UCvOEO35ieBuL-KdV0fXiuag",
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCXuqSBlHAE6Xw-yeJA0Tunw"};
+            List<SyndicationItem> ytRssFeed = new List<SyndicationItem>();
+
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.DtdProcessing = DtdProcessing.Parse;
+            settings.MaxCharactersFromEntities = 1024;
+
             foreach (string channel in youTubeChannels)
             {
-                XmlReader reader = XmlReader.Create(channel);
-                Rss20FeedFormatter formatter = new Rss20FeedFormatter();
-                formatter.ReadFrom(reader);
-                reader.Close();
-                ytFeed.AddRange(formatter.Feed.Items);
-            }
-
-            ytFeed.Sort(CompareDates);
-
-            SyndicationFeed finalYtFeed = new SyndicationFeed();
-            finalYtFeed.Title = new TextSyndicationContent("YouTube Feed");
-            finalYtFeed.Description = new TextSyndicationContent
-            ("RSS Feed Generated .NET Syndication Classes");
-            finalYtFeed.Generator = "My RSS Feed Generator";
-            finalYtFeed.Items = ytFeed;
-
-            foreach (var ytVideo in finalYtFeed.Items)
-            {
                 
+                XmlReader reader = XmlReader.Create(channel, settings);
+                SyndicationFeed feed = SyndicationFeed.Load(reader);
+                reader.Close();
+                ytRssFeed.AddRange(feed.Items);
             }
 
-            return finalYtFeed;
+            ytRssFeed.Sort(CompareDates);
+
+            SyndicationFeed finalYtRssFeed = new SyndicationFeed();
+            finalYtRssFeed.Title = new TextSyndicationContent("YouTube Feed");
+            finalYtRssFeed.Description = new TextSyndicationContent
+            ("RSS Feed Generated .NET Syndication Classes");
+            finalYtRssFeed.Generator = "My RSS Feed Generator";
+            finalYtRssFeed.Items = ytRssFeed;
+
+            YouTubeVideoFeed youtubeVideoFeed = new YouTubeVideoFeed();
+            string videoIDStart = "?v=";
+            foreach (var ytRssFeedItem in finalYtRssFeed.Items)
+            {
+                YouTubeVideo ytVideo = new YouTubeVideo();
+                ytVideo.title = ytRssFeedItem.Title.Text;
+                ytVideo.url = ytRssFeedItem.Links[0].Uri.AbsoluteUri;
+                ytVideo.channel = ytRssFeedItem.Authors[0].Name;
+                ytVideo.uploadedDate = Convert.ToDateTime(ytRssFeedItem.PublishDate.ToString());
+                int videoIDStartIndex = ytVideo.url.LastIndexOf(videoIDStart) + videoIDStart.Length;
+                ytVideo.thumbnailUrl = $"https://img.youtube.com/vi/{ytVideo.url.Substring(videoIDStartIndex)}/0.jpg";
+                youtubeVideoFeed.ytVideos.Add(ytVideo);
+
+            }
+
+            return youtubeVideoFeed;
 
             /*
             Response.ContentType = "text/xml";
