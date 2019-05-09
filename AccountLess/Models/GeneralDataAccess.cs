@@ -10,9 +10,7 @@ namespace AccountLess.Models
 {
     public class GeneralDataAccess
     {
-        private string connectionString =
-        //"Data Source=DESKTOP-HOD0O5L\\SQLEXPRESS;Initial Catalog=AccountLess;Integrated Security=True"; //TO DO: add connection string somewhere else (look up best practices for MVC)
-        "Data Source=DESKTOP-7NBMPHO\\SQLEXPRESS;Initial Catalog = AccountLess; Integrated Security = True";
+        private string connectionString = 
 
             public DataSet GetDataSet(string SQLQuery)
         {

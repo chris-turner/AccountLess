@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using System.ServiceModel.Syndication;
+using System.Collections.Specialized;
+using System.Configuration;
 
 namespace AccountLess.Models
 {
@@ -13,7 +15,7 @@ namespace AccountLess.Models
         public YoutubeSubscriptions getYouTubeSubscriptions(string userID)
         {
             //youtube api link
-            string googleAPIKey = "";
+            string googleAPIKey = WebConfigurationManager.AppSettings["GoogleAPIKey"];
             string youTubeUserName = "";
             string youTubeAPIUrl = $"https://www.googleapis.com/youtube/v3/channels?key={googleAPIKey}&part=id&forUsername={youTubeUserName}";
             YoutubeSubscriptions ys = new YoutubeSubscriptions();
