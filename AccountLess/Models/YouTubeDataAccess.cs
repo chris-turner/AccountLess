@@ -12,6 +12,10 @@ namespace AccountLess.Models
     {
         public YoutubeSubscriptions getYouTubeSubscriptions(string userID)
         {
+            //youtube api link
+            string googleAPIKey = "";
+            string youTubeUserName = "";
+            string youTubeAPIUrl = $"https://www.googleapis.com/youtube/v3/channels?key={googleAPIKey}&part=id&forUsername={youTubeUserName}";
             YoutubeSubscriptions ys = new YoutubeSubscriptions();
             ys.userID = Guid.Parse(userID);
             GeneralDataAccess gda = new GeneralDataAccess();
@@ -24,7 +28,9 @@ namespace AccountLess.Models
         {
             string[] youTubeChannels = {
                 "https://www.youtube.com/feeds/videos.xml?channel_id=UCvOEO35ieBuL-KdV0fXiuag",
-            "https://www.youtube.com/feeds/videos.xml?channel_id=UCXuqSBlHAE6Xw-yeJA0Tunw"};
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCXuqSBlHAE6Xw-yeJA0Tunw",
+            "https://www.youtube.com/feeds/videos.xml?channel_id=UCLNWyduFVhxjj0r1tPrE_-A"
+            };
             List<SyndicationItem> ytRssFeed = new List<SyndicationItem>();
 
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -65,16 +71,6 @@ namespace AccountLess.Models
             }
 
             return youtubeVideoFeed;
-
-            /*
-            Response.ContentType = "text/xml";
-            XmlWriter writer = XmlWriter.Create(Response.Body);
-            Rss20FeedFormatter finalFormatter =
-            new Rss20FeedFormatter(finalFeed);
-            finalFormatter.WriteTo(writer);
-            writer.Close();
-            Response.Body.Flush();
-            */
 
         }
 

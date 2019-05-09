@@ -27,74 +27,84 @@
             <h2>YouTube</h2>
         </div>
     </div>
-
-    <div class="row" id="ytFeed">
+    <div class="row">
         <div class="col-lg-8 col-md-8">
-            <h3>Your Feed</h3>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Your Feed <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Your Feed</a></li>
+                    <li><a href="#">Your Channels</a></li>
+                </ul>
+            </div>
         </div>
-
     </div>
 
     @*@using (Html.BeginForm("addYouTubeChannel", "Sites", FormMethod.Post, new { }))
-    {
-        <div class="row">
-            @ViewData["ErrorMessage"]
-            <div class="col-lg-8 col-md-8" id="addYtChannelDiv">
-                Paste the YouTube channel link here
-                <input type="text" name="ytChannel" id="subreddit" />
-                <input type="submit" class="btn btn-sm" value="Add" />
-            </div>
+        {
+            <div class="row">
+                @ViewData["ErrorMessage"]
+                <div class="col-lg-8 col-md-8" id="addYtChannelDiv">
+                    Paste the YouTube channel link here
+                    <input type="text" name="ytChannel" id="subreddit" />
+                    <input type="submit" class="btn btn-sm" value="Add" />
+                </div>
 
-        </div>
-    }*@
+            </div>
+        }*@
 
     <div class="row">
-        <div class="col-lg-7 col-md-7">
-            <table class="table" id="ytVideosTable">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{ if (Model.ytVideos.Count < 1)
-                        {
-                            <tr>
-                                <td>No channels added yet. </td>
-                                <td> </td>
-                            </tr>
+        
+            @{ if (Model.ytVideos.Count < 1)
+        {
+        <div class="col-lg-10 col-md-10">
+            <span>No channels added yet.</span>
+        </div>
 
-                        }
-                        else
-                        {
-                            foreach (var ytVid in Model.ytVideos)
-                            {
-                                <tr>
-                                    <td>
-                                    <img src="@ytVid.thumbnailUrl" />
-                                    <a href="@ytVid.url" target="_blank">@ytVid.title</a> by @ytVid.channel on @ytVid.uploadedDate</td>
-                                    @*@using (Html.BeginForm("deleteYouTubeChannel", "Sites", FormMethod.Post, new { }))
-                                    {
-                                        <td>
-                                            <input class="hidden" value="@ytChannel" name="ytChannel" id="ytChannel" />
-                                            <input type="submit" value="Delete" class="btn-sm btn-danger" />
-                                        </td>
-                                    }*@
-                                </tr>
-                            }
 
-                        }
+    }
 
-                    }
-
-                </tbody>
-            </table>
+    else
+    {
+    for (int i = 0; i < Model.ytVideos.Count; i++)
+    {
+        <div class="ytVidRow col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <img class="imgYtThumbnail" src="@Model.ytVideos[i].thumbnailUrl" />
+            <br />
+            <span class="ytVidInfo"><a href="@Model.ytVideos[i].url" target="_blank">@Model.ytVideos[i].title</a></span>
+            <br />
+            <span class="ytVidInfo"> by @Model.ytVideos[i].channel on @Model.ytVideos[i].uploadedDate</span>
 
         </div>
+
+    i++;
+    if (i < Model.ytVideos.Count)
+    {
+    <div class="ytVidRow col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <img class="imgYtThumbnail" src="@Model.ytVideos[i].thumbnailUrl" />
+        <br />
+
+        <span class="ytVidInfo"><a href="@Model.ytVideos[i].url" target="_blank">@Model.ytVideos[i].title</a></span>
+        <br />
+
+        <span  class="ytVidInfo"> by @Model.ytVideos[i].channel on @Model.ytVideos[i].uploadedDate</span>
+
     </div>
+    }
+    else
+    {
+    <div class="ytVidRow col-lg-6 col-md-6 col-sm-12 col-xs-12">   </div>
+    }
+
+    }
+
+    }
+
+    }
 
 </div>
+        </div>
 
-@{
-}
+     
+
