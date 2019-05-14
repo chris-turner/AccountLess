@@ -12,13 +12,14 @@ namespace AccountLess.Models
 {
     public class YouTubeDataAccess
     {
-        public YoutubeSubscriptions getYouTubeSubscriptions(string userID)
+        public YouTubeSubscriptions getYouTubeSubscriptions(string userID)
         {
             //youtube api link
-            string googleAPIKey = WebConfigurationManager.AppSettings["GoogleAPIKey"];
+            AppSettings ap = new AppSettings();
+            string googleAPIKey = ap.GoogleAPIKey;
             string youTubeUserName = "";
             string youTubeAPIUrl = $"https://www.googleapis.com/youtube/v3/channels?key={googleAPIKey}&part=id&forUsername={youTubeUserName}";
-            YoutubeSubscriptions ys = new YoutubeSubscriptions();
+            YouTubeSubscriptions ys = new YouTubeSubscriptions();
             ys.userID = Guid.Parse(userID);
             GeneralDataAccess gda = new GeneralDataAccess();
             //DataTable mrTable = gda.GetDataSet($"select subreddit from reddit where UserID = '{userID}';").Tables[0];

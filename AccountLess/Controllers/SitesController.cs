@@ -74,17 +74,27 @@ namespace AccountLess.Controllers
             return Redirect("/Sites/Reddit");
         }
 
-        public IActionResult YouTube()
+        public IActionResult YouTube(string viewType = "Feed")
         {
             string u;
              if (TempData.Peek("UserID") == null)
             {
                 return Redirect("/Home/Index");
             }
+
             u = TempData.Peek("UserID").ToString();
+
             YouTubeDataAccess yda = new YouTubeDataAccess();
-            return View(yda.getYouTubeRssFeed());
+            YouTubeSubscriptions ys = new YouTubeSubscriptions();
+
+            ys.youtubeVideoFeed = yda.getYouTubeRssFeed();
+
+            ViewData["YouTubeView"] = viewType;
+
+
+            return View(ys);
         }
 
-    }
+
+        }
 }

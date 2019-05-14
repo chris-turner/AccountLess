@@ -10,10 +10,12 @@ namespace AccountLess.Models
 {
     public class GeneralDataAccess
     {
-        private string connectionString = 
 
-            public DataSet GetDataSet(string SQLQuery)
+
+        public DataSet GetDataSet(string SQLQuery)
         {
+            AppSettings ap = new AppSettings();
+            string connectionString = ap.ConnectionString;
             SqlConnection conn = new SqlConnection(connectionString);
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand cmd = conn.CreateCommand();
@@ -30,6 +32,8 @@ namespace AccountLess.Models
 
         public int runSQLQuery(string SQLQuery)
         {
+            AppSettings ap = new AppSettings();
+            string connectionString = ap.ConnectionString;
             SqlConnection conn = new SqlConnection(connectionString);
             
             SqlCommand cmd = conn.CreateCommand();

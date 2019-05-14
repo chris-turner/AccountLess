@@ -5,11 +5,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AccountLess.Models;
+using Microsoft.Extensions.Options;
 
 namespace AccountLess.Controllers
 {
     public class HomeController : Controller
     {
+
+        private readonly IOptions<AppSettings> config;
+
+        public HomeController(IOptions<AppSettings> config)
+        {
+            this.config = config;
+        }
         public IActionResult Index()
         {
             return View();
