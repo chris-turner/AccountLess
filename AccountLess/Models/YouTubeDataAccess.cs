@@ -12,50 +12,40 @@ namespace AccountLess.Models
 {
     public class YouTubeDataAccess
     {
-        public YouTubeSubscriptions getYouTubeSubscriptions(string userID)
+        public YouTubeSubscriptions getYouTubeSubscribedChannelsAndVideos(string userID)
         {
-            //youtube api link
-            AppSettings ap = new AppSettings();
-            string googleAPIKey = ap.GoogleAPIKey;
-            string youTubeUserName = "";
-            string youTubeAPIUrl = $"https://www.googleapis.com/youtube/v3/channels?key={googleAPIKey}&part=id&forUsername={youTubeUserName}";
-            YouTubeSubscriptions ys = new YouTubeSubscriptions();
-            ys.userID = Guid.Parse(userID);
+            var youtubeChannels = new List<YouTubeChannel>();
             GeneralDataAccess gda = new GeneralDataAccess();
-            //DataTable mrTable = gda.GetDataSet($"select subreddit from reddit where UserID = '{userID}';").Tables[0];
-            ys.youtubeChannels = new List<string>();
-            return ys;
-        }
+            DataTable dtYtChannelIDs = gda.GetDataSet($"select ChannelID from YouTube where UserID = '{userID}';").Tables[0];
 
-        public YouTubeVideoFeed getYouTubeRssFeed()
-        {
-            string[] youTubeChannels = {
-                "https://www.youtube.com/feeds/videos.xml?channel_id=UCvOEO35ieBuL-KdV0fXiuag",
-            "https://www.youtube.com/feeds/videos.xml?channel_id=UCXuqSBlHAE6Xw-yeJA0Tunw",
-            "https://www.youtube.com/feeds/videos.xml?channel_id=UCLNWyduFVhxjj0r1tPrE_-A"
-            };
-            List<SyndicationItem> ytRssFeed = new List<SyndicationItem>();
+            YouTubeSubscriptions ytSubscriptions = new YouTubeSubscriptions();
+            ytSubscriptions.userID = Guid.Parse(userID);
 
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.DtdProcessing = DtdProcessing.Parse;
             settings.MaxCharactersFromEntities = 1024;
 
-            foreach (string channel in youTubeChannels)
+            List<SyndicationItem> ytRssFeed = new List<SyndicationItem>();
+
+            foreach (DataRow row in dtYtChannelIDs.Rows)
             {
-                
-                XmlReader reader = XmlReader.Create(channel, settings);
+                string channelRssURL = $"https://www.youtube.com/feeds/videos.xml?channel_id={row.ItemArray[0].ToString()}";
+                XmlReader reader = XmlReader.Create(channelRssURL, settings);
                 SyndicationFeed feed = SyndicationFeed.Load(reader);
                 reader.Close();
+                YouTubeChannel ytChannel = new YouTubeChannel();
+                ytChannel.ChannelName = feed.Authors[0].Name;
+                ytChannel.ChannelLink = feed.Authors[0].Uri;
+                ytChannel.ChannelID = feed.Id;
+                youtubeChannels.Add(ytChannel);
                 ytRssFeed.AddRange(feed.Items);
             }
 
+            ytSubscriptions.youtubeChannels = youtubeChannels;
             ytRssFeed.Sort(CompareDates);
 
             SyndicationFeed finalYtRssFeed = new SyndicationFeed();
             finalYtRssFeed.Title = new TextSyndicationContent("YouTube Feed");
-            finalYtRssFeed.Description = new TextSyndicationContent
-            ("RSS Feed Generated .NET Syndication Classes");
-            finalYtRssFeed.Generator = "My RSS Feed Generator";
             finalYtRssFeed.Items = ytRssFeed;
 
             YouTubeVideoFeed youtubeVideoFeed = new YouTubeVideoFeed();
@@ -72,10 +62,10 @@ namespace AccountLess.Models
                 youtubeVideoFeed.ytVideos.Add(ytVideo);
 
             }
-
-            return youtubeVideoFeed;
-
+            ytSubscriptions.youtubeVideoFeed = youtubeVideoFeed;
+            return ytSubscriptions;
         }
+
 
         private int CompareDates(SyndicationItem x, SyndicationItem y)
         {

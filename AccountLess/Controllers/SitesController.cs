@@ -87,7 +87,7 @@ namespace AccountLess.Controllers
             YouTubeDataAccess yda = new YouTubeDataAccess();
             YouTubeSubscriptions ys = new YouTubeSubscriptions();
 
-            ys.youtubeVideoFeed = yda.getYouTubeRssFeed();
+            ys = yda.getYouTubeSubscribedChannelsAndVideos(u);
 
             ViewData["YouTubeView"] = viewType;
 

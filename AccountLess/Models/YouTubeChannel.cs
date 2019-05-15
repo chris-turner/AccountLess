@@ -9,5 +9,6 @@ namespace AccountLess.Models
     {
         public string ChannelName { get; set; }
         public string ChannelLink { get; set; }
+        public string ChannelID { get; set; }
     }
 }

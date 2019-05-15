@@ -18,14 +18,26 @@ padding-top:20px;
 }
 
 .imgYtThumbnail {
-  
-    
+    width: 90%;
 }
 
 .ytVidRow {
-   
+    padding-top: 5px;
 }
 
 .ytVidInfo {
-overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
+}
+
+#addYouTubeChannelDiv {
+    padding-top:5px;
+}
+
+#ytChannelsTable {
+    
+}
+#ytChannelsTable_wrapper {
+    padding-top: 10px;
 }

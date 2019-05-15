@@ -8,7 +8,7 @@ namespace AccountLess.Models
     public class YouTubeSubscriptions
     {
         public Guid userID { get; set; }
-        public List<string> youtubeChannels { get; set; }
+        public List<YouTubeChannel> youtubeChannels { get; set; }
         public YouTubeVideoFeed youtubeVideoFeed { get; set; }
     }
 }

@@ -30,59 +30,32 @@
         </div>
     </div>
 }
-<div id="redditLinkContainer">
-    <div class="row">
-        <div class="col-lg-8 col-md-8">
-            Your Multireddit:
 
-            @foreach (var subReddit in Model.subreddits)
-            {
-                multiredditLink += subReddit + "+";
 
-            }
-            @{ multiredditLink = multiredditLink.Substring(0, multiredditLink.Length - 1);}
-
-            <a href=@multiredditLink target="_blank">View</a>
-            <br />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-8 col-md-8">
-            Old Reddit Layout: <a href=@multiredditLink.Replace("http://", "http://old.") ; target="_blank">View </a>
-
-        </div>
-    </div>
-</div>
-
-@using (Html.BeginForm("addSubreddit", "Sites", FormMethod.Post, new { }))
+@using (Html.BeginForm("addYouTubeChannel", "Sites", FormMethod.Post, new { }))
 {
     <div class="row">
         @ViewData["ErrorMessage"]
-        <div class="col-lg-8 col-md-8" id="addSubredditDiv">
-            Add a Subreddit
-            <input type="text" name="subreddit" id="subreddit" />
+        <div class="col-lg-8 col-md-8" id="addYouTubeChannelDiv">
+            Add a Channel with Username or Channel ID
+            <input type="text" name="youTubeChannel" id="youTubeChannel" />
             <input type="submit" class="btn btn-sm" value="Add" />
         </div>
 
-    </div>
-    <div class="row">
-        <div class="col-lg-8 col-md-8" id="multipleSubsLabelDiv">
-            To enter multiple subreddits at once, separate with + sign. Or paste your entire multireddit link.
-        </div>
     </div>
 }
 
 <div class="row">
     <div class="col-lg-7 col-md-7">
-        <table class="table" id="subredditTable">
+        <table class="table" id="ytChannelsTable">
             <thead>
                 <tr>
-                    <th scope="col">Subreddit</th>
+                    <th scope="col">Channel</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
-                @{ if (Model.subreddits.Count < 1)
+                @{ if (Model.youtubeChannels.Count < 1)
                     {
                         <tr>
                             <td>No subreddits added yet. </td>
@@ -92,14 +65,14 @@
                     }
                     else
                     {
-                        foreach (var subReddit in Model.subreddits)
+                        foreach (var ytChannel in Model.youtubeChannels)
                         {
                             <tr>
-                                <td><a href="http://reddit.com/r/@subReddit" target="_blank">@subReddit</a></td>
+                                <td><a href="@ytChannel.ChannelLink" target="_blank">@ytChannel.ChannelName</a></td>
                                 @using (Html.BeginForm("deleteSubreddit", "Sites", FormMethod.Post, new { }))
                                 {
                                     <td>
-                                        <input class="hidden" value="@subReddit" name="subreddit" id="subreddit" />
+                                        <input class="hidden" value="@ytChannel.ChannelID" name="subreddit" id="subreddit" />
                                         <input type="submit" value="Delete" class="btn-sm btn-danger" />
                                     </td>
                                 }
