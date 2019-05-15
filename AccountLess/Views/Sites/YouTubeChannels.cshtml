@@ -58,7 +58,7 @@
                 @{ if (Model.youtubeChannels.Count < 1)
                     {
                         <tr>
-                            <td>No subreddits added yet. </td>
+                            <td>No Channels added yet. </td>
                             <td> </td>
                         </tr>
 
@@ -69,10 +69,10 @@
                         {
                             <tr>
                                 <td><a href="@ytChannel.ChannelLink" target="_blank">@ytChannel.ChannelName</a></td>
-                                @using (Html.BeginForm("deleteSubreddit", "Sites", FormMethod.Post, new { }))
+                                @using (Html.BeginForm("deleteYouTubeChannel", "Sites", FormMethod.Post, new { }))
                                 {
                                     <td>
-                                        <input class="hidden" value="@ytChannel.ChannelID" name="subreddit" id="subreddit" />
+                                        <input class="hidden" value="@ytChannel.ChannelID" name="youTubeChannel" id="youTubeChannel" />
                                         <input type="submit" value="Delete" class="btn-sm btn-danger" />
                                     </td>
                                 }
