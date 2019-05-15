@@ -41,7 +41,7 @@ namespace AccountLess.Models
                 YouTubeChannel ytChannel = new YouTubeChannel();
                 ytChannel.ChannelName = feed.Authors[0].Name;
                 ytChannel.ChannelLink = feed.Authors[0].Uri;
-                ytChannel.ChannelID = feed.Id;
+                ytChannel.ChannelID = feed.Id.Replace("yt:channel:", "");
                 youtubeChannels.Add(ytChannel);
                 ytRssFeed.AddRange(feed.Items);
             }
@@ -139,7 +139,7 @@ namespace AccountLess.Models
            
             YouTubeSubscriptions ytSub = getYouTubeSubscribedChannelsAndVideos(userID);
 
-            if (ytSub.youtubeChannels.Any(s => s.ChannelName.Contains(youTubeChannel)))
+            if (ytSub.youtubeChannels.Any(s => s.ChannelID.Contains(youTubeChannel)))
             {
                 validChannels.RemoveAll(channel => channel == youTubeChannel);
                 duplicateChannels.Add(youTubeChannel);

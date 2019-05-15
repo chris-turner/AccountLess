@@ -23,6 +23,7 @@ padding-top:20px;
 
 .imgYtThumbnail {
     width: 90%;
+    max-width: 436.5px;
 }
 
 .ytVidRow {
@@ -30,9 +31,10 @@ padding-top:20px;
 }
 
 .ytVidInfo {
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    overflow:hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 436.5px;
 }
 
 #addYouTubeChannelDiv {
