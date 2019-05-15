@@ -62,19 +62,19 @@ namespace AccountLess.Models
 
         }
 
-        private List<string>[] validateSubreddit(string subreddits)
+        private List<string>[] validateSubreddit(string subreddit)
         {
           
-            var regex = new Regex("^[a-zA-Z0-9 ]*$");
+            var regex = new Regex("^[a-zA-Z0-9_-]*$");
             string redditURL = "reddit.com/r/";
-            if (subreddits.Contains(redditURL))
+            if (subreddit.Contains(redditURL))
             {
-                subreddits = subreddits.Substring(subreddits.IndexOf("reddit.com/r/") + redditURL.Length);
+                subreddit = subreddit.Substring(subreddit.IndexOf(redditURL) + redditURL.Length);
             }
-            if (subreddits[subreddits.Length - 1] == '/') {
-                subreddits = subreddits.Substring(0, subreddits.Length - 1    );
+            if (subreddit[subreddit.Length - 1] == '/') {
+                subreddit = subreddit.Substring(0, subreddit.Length - 1    );
             }
-            List<string> subs = subreddits.Split('+').ToList();
+            List<string> subs = subreddit.Split('+').ToList();
 
             List<string> validSubs = new List<string>();
             List<string> invalidSubs = new List<string>();

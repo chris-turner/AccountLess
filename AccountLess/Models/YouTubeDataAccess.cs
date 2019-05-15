@@ -7,6 +7,11 @@ using System.Xml;
 using System.ServiceModel.Syndication;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Text.RegularExpressions;
+using System.Net.Http;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace AccountLess.Models
 {
@@ -70,6 +75,144 @@ namespace AccountLess.Models
         private int CompareDates(SyndicationItem x, SyndicationItem y)
         {
             return y.PublishDate.CompareTo(x.PublishDate);
+        }
+
+        public string getYouTubeIDFromUsername(string username)
+        {
+            
+                AppSettings ap = new AppSettings();
+                string googleAPIURL = $"https://www.googleapis.com/youtube/v3/channels?part=id%2Csnippet%2Cstatistics%2CcontentDetails%2CtopicDetails&forUsername={username}&key={ap.GoogleAPIKey}";
+                GeneralDataAccess gda = new GeneralDataAccess();
+                string jsonString = gda.getJSONFromURL(googleAPIURL);
+                jsonString.IndexOf(",");
+                var jsonObj = JsonConvert.DeserializeObject<dynamic>(jsonString);
+                string id = jsonObj["items"][0].id;
+                return id;
+            
+           
+        }
+        public bool validateYouTubeChannelID(string channelID)
+        {
+
+            AppSettings ap = new AppSettings();
+            string googleAPIURL = $"https://www.googleapis.com/youtube/v3/channels?part=id%2Csnippet%2Cstatistics%2CcontentDetails%2CtopicDetails&id={channelID}&key={ap.GoogleAPIKey}";
+            GeneralDataAccess gda = new GeneralDataAccess();
+            string jsonString = gda.getJSONFromURL(googleAPIURL);
+            jsonString.IndexOf(",");
+            var jsonObj = JsonConvert.DeserializeObject<dynamic>(jsonString);
+            if (jsonObj["items"].Count == 0)
+            {
+                return false;
+            }
+            else
+            return true;
+
+
+        }
+
+
+
+        public List<string>[] addYouTubeChannel(string userID, string youTubeChannel, string youtubeSearchMode)
+        {
+            List<string> invalidChannels = new List<string>();
+            List<string> validChannels = new List<string>();
+            List<string> duplicateChannels = new List<string>();
+
+            if (youtubeSearchMode == "username")
+            {
+                try
+                {
+                    youTubeChannel = getYouTubeIDFromUsername(youTubeChannel);
+                }
+                catch (Exception ex)
+                {
+                    invalidChannels.Add(youTubeChannel);
+                    List<String>[] tempSubs = { invalidChannels, validChannels, duplicateChannels };
+                    return tempSubs;
+
+                }
+            }
+            youTubeChannel = Regex.Replace(youTubeChannel, @"\s+", "");
+            List<String>[] channels = validateYouTubeChannel(youTubeChannel);
+            invalidChannels.AddRange(channels[0]);
+            validChannels.AddRange(channels[1]);
+           
+            YouTubeSubscriptions ytSub = getYouTubeSubscribedChannelsAndVideos(userID);
+
+            if (ytSub.youtubeChannels.Any(s => s.ChannelName.Contains(youTubeChannel)))
+            {
+                validChannels.RemoveAll(channel => channel == youTubeChannel);
+                duplicateChannels.Add(youTubeChannel);
+            }
+
+
+            if (validChannels.Count > 0)
+            {
+                foreach (string channel in validChannels)
+                {
+                    GeneralDataAccess sqlAccess = new GeneralDataAccess();
+                    sqlAccess.runSQLQuery($"insert into YouTube(UserID, ChannelID) values ('{userID}', '{channel}');");
+                }
+            }
+
+            foreach (string channel in duplicateChannels)
+            {
+                validChannels.Remove(channel);
+            }
+
+            List<String>[] finalSubs = { invalidChannels, validChannels, duplicateChannels };
+            return finalSubs;
+        }
+
+        private List<string>[] validateYouTubeChannel(string channel)
+        {
+
+            var regex = new Regex("^[a-zA-Z0-9_-]*$");
+            string[] youTubeURL = { "youtube.com/channel/", "youtube.com/user/" };
+            foreach (string url in youTubeURL)
+            {
+                if (channel.Contains(url))
+                {
+                    channel = channel.Substring(channel.IndexOf(url) + url.Length);
+                }
+            }
+            
+            if (channel[channel.Length - 1] == '/')
+            {
+                channel = channel.Substring(0, channel.Length - 1);
+            }
+
+            List<string> validChannels = new List<string>();
+            List<string> invalidChannels = new List<string>();
+
+            if (validateYouTubeChannelID(channel))
+            {
+                if (regex.IsMatch(channel))
+                {
+                    validChannels.Add(channel);
+
+                }
+                else
+                {
+                    invalidChannels.Add(channel);
+                }
+            }
+            else
+            {
+                invalidChannels.Add(channel);
+            }
+               
+
+            List<string>[] ytChannelLists = { invalidChannels, validChannels };
+            return ytChannelLists;
+
+        }
+
+        public void deleteYouTubeChannel(string userID, string youTubeChannel)
+        {
+            GeneralDataAccess sqlAccess = new GeneralDataAccess();
+            string youTubeChannelID = youTubeChannel.Replace("yt:channel:","");
+            sqlAccess.runSQLQuery($"delete from YouTube where UserID = '{userID}' and ChannelID = '{youTubeChannelID}';");
         }
     }
 }

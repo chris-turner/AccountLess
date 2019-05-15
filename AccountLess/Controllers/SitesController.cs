@@ -95,6 +95,51 @@ namespace AccountLess.Controllers
             return View(ys);
         }
 
+        [HttpPost]
+        public IActionResult addYouTubeChannel(string youTubeChannel, string youtubeSearchMode)
+        {
+            if (TempData.Peek("UserID") == null)
+            {
+                return Redirect("/Home/Index");
+            }
+            string u = TempData.Peek("UserID").ToString();
+            YouTubeDataAccess yda = new YouTubeDataAccess();
+            if (!String.IsNullOrEmpty(youTubeChannel))
+            {
+                List<String>[] channels = yda.addYouTubeChannel(u, youTubeChannel, youtubeSearchMode);
+                foreach (string channel in channels[0])
+                {
+                    TempData["ErrorMessage"] = $"Invalid Channel: {channel}\n";
+                }
 
+                //int subsAdded = 0;
+                //foreach (string sub in subs[1])
+                //{
+                //    subsAdded += 1;
+                //}
+
+                foreach (string channel in channels[2])
+                {
+                    TempData["ErrorMessage"] = $"Duplicate Channel: {channel}\n";
+                }
+            }
+
+            return Redirect("/Sites/YouTube?viewType=Channels");
         }
+
+        [HttpPost]
+        public IActionResult deleteYouTubeChannel(string youTubechannel)
+        {
+            if (TempData.Peek("UserID") == null)
+            {
+                return Redirect("/Home/Index");
+            }
+            string u = TempData.Peek("UserID").ToString();
+            YouTubeDataAccess yda = new YouTubeDataAccess();
+            yda.deleteYouTubeChannel(u, youTubechannel);
+            return Redirect("/Sites/YouTube?viewType=Channels");
+        }
+
+
+    }
 }
