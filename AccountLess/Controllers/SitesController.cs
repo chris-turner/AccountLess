@@ -139,6 +139,20 @@ namespace AccountLess.Controllers
             yda.deleteYouTubeChannel(u, youTubechannel);
             return Redirect("/Sites/YouTube?viewType=Channels");
         }
+        public IActionResult Twitch()
+        {
+            string u;
+            //get multireddit for the userid
+            if (TempData.Peek("UserID") == null)
+            {
+                return Redirect("/Home/Index");
+            }
+            u = TempData.Peek("UserID").ToString();
+            TwitchDataAccess tda = new TwitchDataAccess();
+            string channelInfo = tda.getTwitchChannelInfo("");
+            return View(channelInfo);
+        }
+         
 
 
     }

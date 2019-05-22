@@ -5,6 +5,12 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.IO;
+using System.Web.Helpers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace AccountLess.Models
 {
@@ -54,6 +60,37 @@ namespace AccountLess.Models
                 json = wc.DownloadString(url);
             }
             return json;
+        }
+
+        public string callAPIWithWebReq(string url, List<KeyValuePair<string, string>> headers)
+        {
+            WebRequest req = WebRequest.Create(url);
+            req.ContentType = "application/json";
+
+            foreach (KeyValuePair<string, string> kvp in headers)
+            {
+                req.Headers[kvp.Key] = kvp.Value;
+
+            }
+
+            WebResponse wr = req.GetResponse();
+            Stream stream = wr.GetResponseStream();
+            StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+            string content = reader.ReadToEnd();
+            reader.Close();
+            var json = $"[{content}]"; 
+            var objects = JArray.Parse(json); 
+            string finalJson = "";
+            foreach (JObject o in objects.Children<JObject>())
+            {
+                foreach (JProperty p in o.Properties())
+                {
+                    string name = p.Name;
+                    string value = p.Value.ToString();
+                    finalJson += name + ": " + value;
+                }
+            }
+            return finalJson;
         }
 
 
