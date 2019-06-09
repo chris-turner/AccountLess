@@ -8,7 +8,7 @@ namespace AccountLess.Models
 {
     public class TwitchDataAccess
     {
-        public string getTwitchChannelInfo(string username)
+        public TwitchFollowedChannels getTwitchChannelInfo(string username)
         {
 
             AppSettings ap = new AppSettings();
@@ -20,7 +20,9 @@ namespace AccountLess.Models
             //jsonString.IndexOf(",");
             // var jsonObj = JsonConvert.DeserializeObject<dynamic>(jsonString);
             // string id = jsonObj["items"][0].id;
-            return twitchJson;
+            TwitchFollowedChannels tfc = new TwitchFollowedChannels();
+            tfc.ChannelName = twitchJson;
+            return tfc;
 
 
         }

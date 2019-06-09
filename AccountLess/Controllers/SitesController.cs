@@ -149,11 +149,13 @@ namespace AccountLess.Controllers
             }
             u = TempData.Peek("UserID").ToString();
             TwitchDataAccess tda = new TwitchDataAccess();
-            string channelInfo = tda.getTwitchChannelInfo("");
+            var channelInfo = tda.getTwitchChannelInfo("kitboga");
             return View(channelInfo);
+            //
         }
-         
+
 
 
     }
 }
+  
