@@ -139,19 +139,20 @@ namespace AccountLess.Controllers
             yda.deleteYouTubeChannel(u, youTubechannel);
             return Redirect("/Sites/YouTube?viewType=Channels");
         }
-        public IActionResult Twitch()
+        public IActionResult Twitch(string viewType = "Feed")
         {
-            string u;
             //get multireddit for the userid
             if (TempData.Peek("UserID") == null)
             {
                 return Redirect("/Home/Index");
             }
-            u = TempData.Peek("UserID").ToString();
+            string userId = TempData.Peek("UserID").ToString();
             TwitchDataAccess tda = new TwitchDataAccess();
-            var channelInfo = tda.getTwitchChannelInfo("kitboga");
+            var channelInfo = tda.getTwitchChannelInfo(userId);
+
+            ViewData["TwitchView"] = viewType;
+
             return View(channelInfo);
-            //
         }
 
 

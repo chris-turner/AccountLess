@@ -1,0 +1,76 @@
+﻿@{
+
+}
+<div class="row">
+    <div class="row paddingBottom">
+        <div class="col-lg-8 col-md-8">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="youtubeViewMode">
+                    All Followed Channels <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="@Url.Action("Twitch", "Sites", new { viewType = "Live" })" class="twitchViewOption">Live Channels</a></li>
+                    <li><a href="@Url.Action("Twitch", "Sites", new { viewType = "Channels" })" class="twitchViewOption">All Followed Channels</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@using (Html.BeginForm("addYouTubeChannel", "Sites", FormMethod.Post, new { }))
+{
+    <div class="row">
+        <div class="col-lg-8 col-md-8">
+            <div class="col-lg-8 col-md-8" id="addTwitchChannelDiv">
+                Add a Channel
+                <input type="text" name="subreddit" id="subreddit" />
+                <input type="submit" class="btn btn-sm" value="Add" />
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-7 col-md-7">
+        <table class="table" id="ytChannelsTable">
+            <thead>
+                <tr>
+                    <th scope="col">Channel</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ if (Model.twitchFollowedChannels.Count < 1)
+                    {
+                        <tr>
+                            <td>No Channels added yet. </td>
+                            <td> </td>
+                        </tr>
+
+                    }
+                    else
+                    {
+                        foreach (var twitchChannel in Model.twitchFollowedChannels)
+                        {
+                            <tr>
+                                <td><a href="http://twitch.tv/@twitchChannel.twitchChannelName" target="_blank">@twitchChannel.twitchChannelName</a></td>
+                                @using (Html.BeginForm("deleteYouTubeChannel", "Sites", FormMethod.Post, new { }))
+                                {
+                                    <td>
+                                        <input class="hidden" value="@twitchChannel.twitchChannelName" name="youTubeChannel" id="youTubeChannel" />
+                                        <input type="submit" value="Delete" class="btn-sm btn-danger" />
+                                    </td>
+                                }
+                            </tr>
+                        }
+
+                    }
+
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+</div>

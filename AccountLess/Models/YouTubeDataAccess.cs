@@ -84,7 +84,6 @@ namespace AccountLess.Models
                 string googleAPIURL = $"https://www.googleapis.com/youtube/v3/channels?part=id%2Csnippet%2Cstatistics%2CcontentDetails%2CtopicDetails&forUsername={username}&key={ap.GoogleAPIKey}";
                 GeneralDataAccess gda = new GeneralDataAccess();
                 string jsonString = gda.getJSONFromURL(googleAPIURL);
-                jsonString.IndexOf(",");
                 var jsonObj = JsonConvert.DeserializeObject<dynamic>(jsonString);
                 string id = jsonObj["items"][0].id;
                 return id;
@@ -98,7 +97,6 @@ namespace AccountLess.Models
             string googleAPIURL = $"https://www.googleapis.com/youtube/v3/channels?part=id%2Csnippet%2Cstatistics%2CcontentDetails%2CtopicDetails&id={channelID}&key={ap.GoogleAPIKey}";
             GeneralDataAccess gda = new GeneralDataAccess();
             string jsonString = gda.getJSONFromURL(googleAPIURL);
-            jsonString.IndexOf(",");
             var jsonObj = JsonConvert.DeserializeObject<dynamic>(jsonString);
             if (jsonObj["items"].Count == 0)
             {

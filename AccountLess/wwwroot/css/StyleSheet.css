@@ -47,3 +47,16 @@ padding-top:20px;
 #ytChannelsTable_wrapper {
     padding-top: 10px;
 }
+
+#twitchChannelsTable_wrapper {
+    padding-top: 10px;
+}
+
+
+.boldText {
+    font-weight:bold;
+}
+
+.paddingBottom {
+padding-bottom: 20px;
+}
