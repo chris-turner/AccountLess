@@ -18,13 +18,13 @@
 </div>
 
 
-@using (Html.BeginForm("addYouTubeChannel", "Sites", FormMethod.Post, new { }))
+@using (Html.BeginForm("addTwitchChannel", "Sites", FormMethod.Post, new { }))
 {
     <div class="row">
         <div class="col-lg-8 col-md-8">
             <div class="col-lg-8 col-md-8" id="addTwitchChannelDiv">
                 Add a Channel
-                <input type="text" name="subreddit" id="subreddit" />
+                <input type="text" name="twitchChannel" id="twitchChannel" />
                 <input type="submit" class="btn btn-sm" value="Add" />
             </div>
         </div>
@@ -33,7 +33,7 @@
 
 <div class="row">
     <div class="col-lg-7 col-md-7">
-        <table class="table" id="ytChannelsTable">
+        <table class="table" id="twitchChannelsTable">
             <thead>
                 <tr>
                     <th scope="col">Channel</th>
@@ -55,10 +55,10 @@
                         {
                             <tr>
                                 <td><a href="http://twitch.tv/@twitchChannel.twitchChannelName" target="_blank">@twitchChannel.twitchChannelName</a></td>
-                                @using (Html.BeginForm("deleteYouTubeChannel", "Sites", FormMethod.Post, new { }))
+                                @using (Html.BeginForm("deleteTwitchChannel", "Sites", FormMethod.Post, new { }))
                                 {
                                     <td>
-                                        <input class="hidden" value="@twitchChannel.twitchChannelName" name="youTubeChannel" id="youTubeChannel" />
+                                        <input class="hidden" value="@twitchChannel.twitchChannelName" name="twitchChannel" id="twitchChannel" />
                                         <input type="submit" value="Delete" class="btn-sm btn-danger" />
                                     </td>
                                 }

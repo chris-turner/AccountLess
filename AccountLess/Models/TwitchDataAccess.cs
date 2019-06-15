@@ -3,17 +3,23 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AccountLess.Models
 {
     public class TwitchDataAccess
     {
-        public TwitchFollowedChannels getTwitchChannelInfo(string userID)
+        public TwitchFollowedChannels getTwitchChannelInfo(string userID, string viewType)
         {
             TwitchFollowedChannels tfc = new TwitchFollowedChannels();
+
             tfc.twitchFollowedChannels = getTwitchFollowedChannels(userID);
-            tfc.twitchLiveChannels = getTwitchLiveChannels(tfc.twitchFollowedChannels);
+
+            if (viewType != "Channels")
+            {
+                tfc.twitchLiveChannels = getTwitchLiveChannels(tfc.twitchFollowedChannels);
+            }
             return tfc;
 
         }
@@ -21,14 +27,17 @@ namespace AccountLess.Models
         private List<TwitchLiveChannel> getTwitchLiveChannels(List<TwitchChannel> twitchFollowedChannels)
         {
             List<TwitchLiveChannel> tlc = new List<TwitchLiveChannel>();
-            foreach (TwitchChannel channel in twitchFollowedChannels)
+
+            List<string> channelNames = new List<string>();
+            if (twitchFollowedChannels.Count > 0)
             {
-                TwitchLiveChannel liveChannel = getTwitchLiveChannelInfo(channel.twitchChannelName);
-                if (liveChannel != null)
+                foreach (TwitchChannel channel in twitchFollowedChannels)
                 {
-                    tlc.Add(liveChannel);
+                    channelNames.Add(channel.twitchChannelName);
                 }
+                tlc  = getTwitchLiveChannelInfo(channelNames);
             }
+
 
             return tlc;
         }
@@ -49,32 +58,48 @@ namespace AccountLess.Models
             return twitchFollowedChannels;
         }
 
-        public TwitchLiveChannel getTwitchLiveChannelInfo(string channelName) {
+        public List<TwitchLiveChannel> getTwitchLiveChannelInfo(List<string> channelNames) {
 
             AppSettings ap = new AppSettings();
-            string twitchAPIURL = $"https://api.twitch.tv/helix/streams?user_login={channelName}";
+            string twitchAPIURL = "https://api.twitch.tv/helix/streams?user_login=";
+            for (int i = 0; i < channelNames.Count; i++)
+            {
+                if (i == channelNames.Count - 1)
+                {
+                    twitchAPIURL += channelNames[i];
+                }
+                else {
+                    twitchAPIURL += $"{channelNames[i]}&user_login=";
+                }
+            }
+            
             GeneralDataAccess gda = new GeneralDataAccess();
             List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
             headers.Add(new KeyValuePair<string, string>("Client-ID", ap.TwitchAPIKey));
             string twitchJson = gda.callAPIWithWebReq(twitchAPIURL, headers);
 
             TwitchFollowedChannels tfc = new TwitchFollowedChannels();
-            TwitchLiveChannel tlc = null;
+            List<TwitchLiveChannel> twitchLiveChannels = new List<TwitchLiveChannel>(); 
             if (!twitchJson.Contains("data: []pagination: {}"))
             {
-                tlc = new TwitchLiveChannel();
+                
                 twitchJson = "{" + twitchJson.Substring(0, twitchJson.IndexOf("pagination")) + "}";
                 var jsonObj = JsonConvert.DeserializeObject<dynamic>(twitchJson);
+                for (int i = 0; i < jsonObj["data"].Count; i++)
+                {
+                    TwitchLiveChannel tlc = new TwitchLiveChannel();
+                    tlc.twitchChannelName = jsonObj["data"][i].user_name;
+                    tlc.game = getTwitchGameFromID(jsonObj["data"][i].game_id.ToString());
+                    tlc.streamTitle = jsonObj["data"][i].title;
+                    tlc.thumbnailURL = jsonObj["data"][i].thumbnail_url.ToString().Replace("{width}", "210").Replace("{height}", "118");
+                    tlc.viewerCount = jsonObj["data"][i].viewer_count;
+                    twitchLiveChannels.Add(tlc);
+                }
                 
-                tlc.twitchChannelName = jsonObj["data"][0].user_name;
-                tlc.game = getTwitchGameFromID(jsonObj["data"][0].game_id.ToString());
-                tlc.streamTitle = jsonObj["data"][0].title;
-                tlc.thumbnailURL = jsonObj["data"][0].thumbnail_url.ToString().Replace("{width}", "210").Replace("{height}", "118");
-                tlc.viewerCount = jsonObj["data"][0].viewer_count;
                 
             }
 
-            return tlc;
+            return twitchLiveChannels;
         }
 
         private string getTwitchGameFromID(string gameID)
@@ -88,6 +113,87 @@ namespace AccountLess.Models
             twitchJson = "{" + twitchJson + "}";
             var jsonObj = JsonConvert.DeserializeObject<dynamic>(twitchJson);
             return jsonObj["data"][0].name;
+        }
+
+        internal List<string>[] addTwitchChannel(string u, string twitchChannel)
+        {
+            List<string> invalidChannels = new List<string>();
+            List<string> validChannels = new List<string>();
+            List<string> duplicateChannels = new List<string>();
+
+            twitchChannel = Regex.Replace(twitchChannel, @"\s+", "");
+            List<String>[] channels = validateTwitchChannel(twitchChannel);
+            invalidChannels.AddRange(channels[0]);
+            validChannels.AddRange(channels[1]);
+
+            TwitchFollowedChannels twitchFollowedChannels = new TwitchFollowedChannels();
+
+            twitchFollowedChannels.twitchFollowedChannels = getTwitchFollowedChannels(u);
+
+            if (twitchFollowedChannels.twitchFollowedChannels.Any(s => s.twitchChannelName.Contains(twitchChannel)))
+            {
+                validChannels.RemoveAll(channel => channel == twitchChannel);
+                duplicateChannels.Add(twitchChannel);
+            }
+
+
+            if (validChannels.Count > 0)
+            {
+                foreach (string channel in validChannels)
+                {
+                    GeneralDataAccess sqlAccess = new GeneralDataAccess();
+                    sqlAccess.runSQLQuery($"insert into Twitch(UserID, ChannelName) values ('{u}', '{channel}');");
+                }
+            }
+
+            foreach (string channel in duplicateChannels)
+            {
+                validChannels.Remove(channel);
+            }
+
+            List<String>[] finalSubs = { invalidChannels, validChannels, duplicateChannels };
+            return finalSubs;
+        }
+
+        private List<string>[] validateTwitchChannel(string twitchChannel)
+        {
+            var regex = new Regex("^[a-zA-Z0-9_-]*$");
+            string[] youTubeURL = { "twitch.com/"};
+            foreach (string url in youTubeURL)
+            {
+                if (twitchChannel.Contains(url))
+                {
+                    twitchChannel = twitchChannel.Substring(twitchChannel.IndexOf(url) + url.Length);
+                }
+            }
+
+            if (twitchChannel[twitchChannel.Length - 1] == '/')
+            {
+                twitchChannel = twitchChannel.Substring(0, twitchChannel.Length - 1);
+            }
+
+            List<string> validChannels = new List<string>();
+            List<string> invalidChannels = new List<string>();
+
+            if (regex.IsMatch(twitchChannel))
+                {
+                    validChannels.Add(twitchChannel);
+
+                }
+                else
+                {
+                    invalidChannels.Add(twitchChannel);
+                }
+
+
+            List<string>[] twitchChannelLists = { invalidChannels, validChannels };
+            return twitchChannelLists;
+        }
+
+        internal void deleteTwitchChannel(string u, string twitchChannel)
+        {
+            GeneralDataAccess sqlAccess = new GeneralDataAccess();
+            sqlAccess.runSQLQuery($"delete from Twitch where UserID = '{u}' and ChannelName = '{twitchChannel}';");
         }
     }
 }

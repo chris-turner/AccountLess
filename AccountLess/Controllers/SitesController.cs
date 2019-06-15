@@ -148,11 +148,56 @@ namespace AccountLess.Controllers
             }
             string userId = TempData.Peek("UserID").ToString();
             TwitchDataAccess tda = new TwitchDataAccess();
-            var channelInfo = tda.getTwitchChannelInfo(userId);
+            var channelInfo = tda.getTwitchChannelInfo(userId, viewType);
 
             ViewData["TwitchView"] = viewType;
 
             return View(channelInfo);
+        }
+
+        [HttpPost]
+        public IActionResult addTwitchChannel(string twitchChannel)
+        {
+            if (TempData.Peek("UserID") == null)
+            {
+                return Redirect("/Home/Index");
+            }
+            string u = TempData.Peek("UserID").ToString();
+            TwitchDataAccess tda = new TwitchDataAccess();
+            if (!String.IsNullOrEmpty(twitchChannel))
+            {
+                List<String>[] channels = tda.addTwitchChannel(u, twitchChannel);
+                foreach (string channel in channels[0])
+                {
+                    TempData["ErrorMessage"] = $"Invalid Channel: {channel}\n";
+                }
+
+                //int subsAdded = 0;
+                //foreach (string sub in subs[1])
+                //{
+                //    subsAdded += 1;
+                //}
+
+                foreach (string channel in channels[2])
+                {
+                    TempData["ErrorMessage"] = $"Duplicate Channel: {channel}\n";
+                }
+            }
+
+            return Redirect("/Sites/Twitch?viewType=Channels");
+        }
+
+        [HttpPost]
+        public IActionResult deleteTwitchChannel(string twitchChannel)
+        {
+            if (TempData.Peek("UserID") == null)
+            {
+                return Redirect("/Home/Index");
+            }
+            string u = TempData.Peek("UserID").ToString();
+            TwitchDataAccess tda = new TwitchDataAccess();
+            tda.deleteTwitchChannel(u, twitchChannel);
+            return Redirect("/Sites/Twitch?viewType=Channels");
         }
 
 
