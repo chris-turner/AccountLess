@@ -7,7 +7,6 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.IO;
-using System.Web.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
@@ -72,8 +71,18 @@ namespace AccountLess.Models
                 req.Headers[kvp.Key] = kvp.Value;
 
             }
-
-            WebResponse wr = req.GetResponse();
+            WebResponse wr = null;
+            try
+            {
+                wr = req.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                if (ex.Message.Contains("Too Many"))
+                {
+                    return "ERROR";
+                }
+            }
             Stream stream = wr.GetResponseStream();
             StreamReader reader = new StreamReader(stream, Encoding.UTF8);
             string content = reader.ReadToEnd();
