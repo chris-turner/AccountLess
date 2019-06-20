@@ -80,7 +80,7 @@ namespace AccountLess.Models
             {
                 if (ex.Message.Contains("Too Many"))
                 {
-                    return "ERROR";
+                    return "Too Many Requests";
                 }
             }
             Stream stream = wr.GetResponseStream();

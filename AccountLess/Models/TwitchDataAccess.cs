@@ -77,26 +77,41 @@ namespace AccountLess.Models
             List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
             headers.Add(new KeyValuePair<string, string>("Client-ID", ap.TwitchAPIKey));
             string twitchJson = gda.callAPIWithWebReq(twitchAPIURL, headers);
+            List<TwitchLiveChannel> twitchLiveChannels = new List<TwitchLiveChannel>();
 
-            TwitchFollowedChannels tfc = new TwitchFollowedChannels();
-            List<TwitchLiveChannel> twitchLiveChannels = new List<TwitchLiveChannel>(); 
-            if (!twitchJson.Contains("data: []pagination: {}"))
+            if (twitchJson == "Too Many Requests")
             {
-                
-                twitchJson = "{" + twitchJson.Substring(0, twitchJson.IndexOf("pagination")) + "}";
-                var jsonObj = JsonConvert.DeserializeObject<dynamic>(twitchJson);
-                for (int i = 0; i < jsonObj["data"].Count; i++)
+                twitchLiveChannels = null;
+            }
+
+            else
+            {
+                if (!twitchJson.Contains("data: []pagination: {}"))
                 {
-                    TwitchLiveChannel tlc = new TwitchLiveChannel();
-                    tlc.twitchChannelName = jsonObj["data"][i].user_name;
-                    tlc.game = getTwitchGameFromID(jsonObj["data"][i].game_id.ToString());
-                    tlc.streamTitle = jsonObj["data"][i].title;
-                    tlc.thumbnailURL = jsonObj["data"][i].thumbnail_url.ToString().Replace("{width}", "210").Replace("{height}", "118");
-                    tlc.viewerCount = jsonObj["data"][i].viewer_count;
-                    twitchLiveChannels.Add(tlc);
+
+                    twitchJson = "{" + twitchJson.Substring(0, twitchJson.IndexOf("pagination")) + "}";
+                    var jsonObj = JsonConvert.DeserializeObject<dynamic>(twitchJson);
+                    for (int i = 0; i < jsonObj["data"].Count; i++)
+                    {
+                        TwitchLiveChannel tlc = new TwitchLiveChannel();
+                        tlc.twitchChannelName = jsonObj["data"][i].user_name;
+                        string game = getTwitchGameFromID(jsonObj["data"][i].game_id.ToString());
+                        if (game == "Too Many Requests")
+                        {
+                            twitchLiveChannels = null;
+                        }
+                        else
+                        {
+                            tlc.game = game;
+                            tlc.streamTitle = jsonObj["data"][i].title;
+                            tlc.thumbnailURL = jsonObj["data"][i].thumbnail_url.ToString().Replace("{width}", "210").Replace("{height}", "118");
+                            tlc.viewerCount = jsonObj["data"][i].viewer_count;
+                            twitchLiveChannels.Add(tlc);
+                        }
+                    }
+
+
                 }
-                
-                
             }
 
             return twitchLiveChannels;
@@ -110,6 +125,10 @@ namespace AccountLess.Models
             List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
             headers.Add(new KeyValuePair<string, string>("Client-ID", ap.TwitchAPIKey));
             string twitchJson = gda.callAPIWithWebReq(twitchAPIURL, headers);
+            if (twitchJson == "Too Many Requests")
+            {
+                return twitchJson;
+            }
             twitchJson = "{" + twitchJson + "}";
             var jsonObj = JsonConvert.DeserializeObject<dynamic>(twitchJson);
             return jsonObj["data"][0].name;
