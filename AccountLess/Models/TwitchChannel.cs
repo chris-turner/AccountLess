@@ -10,3 +10,4 @@ namespace AccountLess.Models
         public string twitchChannelName { get; set; }
     }
 }
+  

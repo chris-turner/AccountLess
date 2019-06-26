@@ -26,31 +26,42 @@ namespace AccountLess.Controllers
         [HttpPost]
         public IActionResult Login(string username)
         {
-            UserDataAccess uda = new UserDataAccess(); //
-            bool isValidUsername = uda.validateUserName(username, "login");
-            string userID = "";
-            if (isValidUsername)
+            if (!String.IsNullOrEmpty(username))
             {
-                 userID = uda.getUserIDForUserName(username);
-
-                if (String.IsNullOrEmpty(userID.Trim()))
+                UserDataAccess uda = new UserDataAccess();
+                bool isValidUsername = uda.validateUserName(username, "login");
+                string userID = "";
+                if (isValidUsername)
                 {
-                    TempData["ErrorMessage"] = "Invalid Username+Login";
-                    return Redirect("/Home/Index");
+                    userID = uda.getUserIDForUserName(username);
+
+                    if (String.IsNullOrEmpty(userID.Trim()))
+                    {
+                        TempData["ErrorMessage"] = "Invalid Username+Login";
+                        return Redirect("/Home/Index");
+                    }
+                    else
+                    {
+                        TempData["UserID"] = userID;
+                        TempData["Username"] = username;
+                        return Redirect("/Home/Index");
+                    }
+
                 }
                 else
                 {
-                    TempData["UserID"] = userID;
+                    TempData["UserID"] = null;
+                    TempData["ErrorMessage"] = "Invalid Username";
                     return Redirect("/Home/Index");
                 }
-                
             }
-            else {
+            else
+            {
                 TempData["UserID"] = null;
-                TempData["ErrorMessage"] = "Invalid Username+Login";
+                TempData["ErrorMessage"] = "Invalid Username";
                 return Redirect("/Home/Index");
             }
-           
+
         }
 
         public IActionResult About()
@@ -67,20 +78,42 @@ namespace AccountLess.Controllers
 
         public IActionResult Register(string username)
         {
-            UserDataAccess uda = new UserDataAccess();
-            bool isValidUserName = uda.validateUserName(username, "register");
-            if (isValidUserName)
+            if (!String.IsNullOrEmpty(username))
             {
-                TempData["UserID"] = uda.registerNewUser(username);
+                UserDataAccess uda = new UserDataAccess();
+                bool isValidUserName = uda.validateUserName(username, "register");
+                if (isValidUserName)
+                {
+                    TempData["UserID"] = uda.registerNewUser(username);
+                    TempData["Username"] = username;
+                }
+                else
+                {
+                    TempData["UserID"] = null;
+                    TempData["ErrorMessage"] = "Invalid Username";
+                }
             }
             else
             {
                 TempData["UserID"] = null;
-                TempData["ErrorMessage"] = "Invalid Username+Register";
+                TempData["ErrorMessage"] = "Invalid Username";
             }
             return Redirect("/Home/Index");
         }
-        
+
+        public IActionResult OpenRegisterDiv()
+        {
+            TempData["LoginViewMode"] = "Register";
+            return Redirect("/Home/Index");
+        }
+
+        public IActionResult OpenLoginDiv()
+        {
+            TempData["LoginViewMode"] = "Login";
+            return Redirect("/Home/Index");
+        }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
