@@ -136,6 +136,7 @@ namespace AccountLess.Models
 
         internal List<string>[] addTwitchChannel(string u, string twitchChannel)
         {
+            twitchChannel = twitchChannel.ToLower();
             List<string> invalidChannels = new List<string>();
             List<string> validChannels = new List<string>();
             List<string> duplicateChannels = new List<string>();
