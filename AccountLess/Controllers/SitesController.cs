@@ -96,27 +96,21 @@ namespace AccountLess.Controllers
         }
 
         [HttpPost]
-        public IActionResult addYouTubeChannel(string youTubeChannel, string youtubeSearchMode)
+        public IActionResult addYouTubeChannel(string youTubeChannel)
         {
             if (TempData.Peek("UserID") == null)
             {
                 return Redirect("/Home/Index");
             }
-            string u = TempData.Peek("UserID").ToString();
+            string userID = TempData.Peek("UserID").ToString();
             YouTubeDataAccess yda = new YouTubeDataAccess();
             if (!String.IsNullOrEmpty(youTubeChannel))
             {
-                List<String>[] channels = yda.addYouTubeChannel(u, youTubeChannel, youtubeSearchMode);
+                List<String>[] channels = yda.addYouTubeChannel(userID, youTubeChannel);
                 foreach (string channel in channels[0])
                 {
                     TempData["ErrorMessage"] = $"Invalid Channel: {channel}\n";
                 }
-
-                //int subsAdded = 0;
-                //foreach (string sub in subs[1])
-                //{
-                //    subsAdded += 1;
-                //}
 
                 foreach (string channel in channels[2])
                 {

@@ -110,14 +110,21 @@ namespace AccountLess.Models
 
 
 
-        public List<string>[] addYouTubeChannel(string userID, string youTubeChannel, string youtubeSearchMode)
+        public List<string>[] addYouTubeChannel(string userID, string youTubeChannel)
         {
             List<string> invalidChannels = new List<string>();
             List<string> validChannels = new List<string>();
             List<string> duplicateChannels = new List<string>();
 
-            if (youtubeSearchMode == "username")
+            string[] youTubeURL = { "youtube.com/channel/", "youtube.com/user/" };
+
+            if (youTubeChannel.Contains(youTubeURL[0]))
             {
+                youTubeChannel = youTubeChannel.Substring(youTubeChannel.IndexOf(youTubeURL[0]) + youTubeURL[0].Length);
+            }
+            else if (youTubeChannel.Contains(youTubeURL[1]))
+            {
+                youTubeChannel = youTubeChannel.Substring(youTubeChannel.IndexOf(youTubeURL[1]) + youTubeURL[1].Length);
                 try
                 {
                     youTubeChannel = getYouTubeIDFromUsername(youTubeChannel);
@@ -125,11 +132,18 @@ namespace AccountLess.Models
                 catch (Exception ex)
                 {
                     invalidChannels.Add(youTubeChannel);
-                    List<String>[] tempSubs = { invalidChannels, validChannels, duplicateChannels };
-                    return tempSubs;
+                    List<String>[] tempChannel = { invalidChannels, validChannels, duplicateChannels };
+                    return tempChannel;
 
                 }
+
             }
+            else {
+                invalidChannels.Add(youTubeChannel);
+                List<String>[] tempChannel = { invalidChannels, validChannels, duplicateChannels };
+                return tempChannel;
+            }
+
             youTubeChannel = Regex.Replace(youTubeChannel, @"\s+", "");
             List<String>[] channels = validateYouTubeChannel(youTubeChannel);
             invalidChannels.AddRange(channels[0]);
@@ -158,22 +172,15 @@ namespace AccountLess.Models
                 validChannels.Remove(channel);
             }
 
-            List<String>[] finalSubs = { invalidChannels, validChannels, duplicateChannels };
-            return finalSubs;
+            List<String>[] finalChannel = { invalidChannels, validChannels, duplicateChannels };
+            return finalChannel;
         }
 
         private List<string>[] validateYouTubeChannel(string channel)
         {
 
             var regex = new Regex("^[a-zA-Z0-9_-]*$");
-            string[] youTubeURL = { "youtube.com/channel/", "youtube.com/user/" };
-            foreach (string url in youTubeURL)
-            {
-                if (channel.Contains(url))
-                {
-                    channel = channel.Substring(channel.IndexOf(url) + url.Length);
-                }
-            }
+            
             
             if (channel[channel.Length - 1] == '/')
             {

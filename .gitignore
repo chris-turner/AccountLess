@@ -65,3 +65,4 @@ AccountLess/obj/AccountLess.csproj.nuget.g.targets
 AccountLess/obj/Debug/netcoreapp2.1/AccountLess.csproj.CoreCompileInputs.cache
 AccountLess/obj/Debug/netcoreapp2.1/AccountLess.csprojAssemblyReference.cache
 AccountLess/obj/project.assets.json
+AccountLess/Models/AppSettings.cs
