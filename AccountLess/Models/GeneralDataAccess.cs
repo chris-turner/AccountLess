@@ -102,6 +102,45 @@ namespace AccountLess.Models
             return finalJson;
         }
 
+        public int runStoredProc(string storedProcName, List<SqlParameter> sqlParams)
+        {
+            AppSettings ap = new AppSettings();
+            string connectionString = ap.ConnectionString;
+            SqlConnection conn = new SqlConnection(connectionString);
 
+            SqlCommand cmd = conn.CreateCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = storedProcName;
+
+            foreach (SqlParameter param in sqlParams)
+            {
+                cmd.Parameters.Add(param);
+            }
+            conn.Open();
+            int rowsAffected = cmd.ExecuteNonQuery();
+            conn.Close();
+            return rowsAffected;
+        }
+
+        public string runStoredProcOutput(string storedProcName, List<SqlParameter> sqlParams, string outputParamName)
+        {
+            AppSettings ap = new AppSettings();
+            string connectionString = ap.ConnectionString;
+            SqlConnection conn = new SqlConnection(connectionString);
+
+            SqlCommand cmd = conn.CreateCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = storedProcName;
+
+            foreach (SqlParameter param in sqlParams)
+            {
+                cmd.Parameters.Add(param);
+            }
+            conn.Open();
+            cmd.ExecuteNonQuery();
+            string output = cmd.Parameters[outputParamName].Value.ToString();
+            conn.Close();
+            return output;
+        }
     }
 }

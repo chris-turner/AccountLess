@@ -24,44 +24,38 @@ namespace AccountLess.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string username)
+        public IActionResult Login(string username, string password)
         {
-            if (!String.IsNullOrEmpty(username))
+            if (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password))
             {
                 UserDataAccess uda = new UserDataAccess();
-                bool isValidUsername = uda.validateUserName(username, "login");
-                string userID = "";
-                if (isValidUsername)
+                string usernameMessage = uda.validateUserName(username, "login");
+                string userID;
+                if (usernameMessage == "")
                 {
-                    userID = uda.getUserIDForUserName(username);
+                    userID = uda.login(username, password);
 
                     if (String.IsNullOrEmpty(userID.Trim()))
                     {
-                        TempData["ErrorMessage"] = "Invalid Username+Login";
-                        return Redirect("/Home/Index");
+                        setLoginErrorMessage("Invalid Username or Password");
                     }
                     else
                     {
                         TempData["UserID"] = userID;
                         TempData["Username"] = username;
-                        return Redirect("/Home/Index");
                     }
 
                 }
                 else
                 {
-                    TempData["UserID"] = null;
-                    TempData["ErrorMessage"] = "Invalid Username";
-                    return Redirect("/Home/Index");
+                    setLoginErrorMessage("Invalid Username or Password");
                 }
             }
             else
             {
-                TempData["UserID"] = null;
-                TempData["ErrorMessage"] = "Invalid Username";
-                return Redirect("/Home/Index");
+                setLoginErrorMessage("Invalid Username or Password");
             }
-
+            return Redirect("/Home/Index");
         }
 
         public IActionResult About()
@@ -76,29 +70,61 @@ namespace AccountLess.Controllers
             return Redirect("/Home/Index");
         }
 
-        public IActionResult Register(string username)
+        public IActionResult Register(string username, string password)
         {
-            if (!String.IsNullOrEmpty(username))
+            TempData["LoginViewMode"] = "Register";
+            if (String.IsNullOrEmpty(username))
             {
+                setLoginErrorMessage("Invalid Username.");
+            }
+            else if (String.IsNullOrEmpty(password))
+            {
+                setLoginErrorMessage("Invalid Password.");
+            }
+            else if (password.Length > 50)
+            {
+                setLoginErrorMessage("Invalid Password. Password should be 50 characters or less.");
+            }
+            else if (password.Length < 5)
+            {
+                setLoginErrorMessage("Invalid Password. Password should be 5 or more characters.");
+            }
+            else if (username.Length < 3)
+            {
+                setLoginErrorMessage("Invalid Username. Username should be 3 or more characters.");
+            }
+            else if (username.Length > 25)
+            {
+                setLoginErrorMessage("Invalid Username. Username should be 25 characters or less.");
+            }
+            else {
                 UserDataAccess uda = new UserDataAccess();
-                bool isValidUserName = uda.validateUserName(username, "register");
-                if (isValidUserName)
+                string usernameMessage = uda.validateUserName(username, "register");
+                if (usernameMessage == "")
                 {
-                    TempData["UserID"] = uda.registerNewUser(username);
+                    try
+                    {
+                        TempData["UserID"] = uda.registerNewUser(username, password);
+                    }
+                    catch (Exception ex)
+                    {
+                        setLoginErrorMessage("Invalid Username or Password");
+                    }
                     TempData["Username"] = username;
+                    TempData["LoginViewMode"] = "";
                 }
                 else
                 {
-                    TempData["UserID"] = null;
-                    TempData["ErrorMessage"] = "Invalid Username";
+                    setLoginErrorMessage(usernameMessage);
                 }
             }
-            else
-            {
-                TempData["UserID"] = null;
-                TempData["ErrorMessage"] = "Invalid Username";
-            }
             return Redirect("/Home/Index");
+        }
+
+        public void setLoginErrorMessage(string errorMessage)
+        {
+            TempData["UserID"] = null;
+            TempData["ErrorMessage"] = errorMessage;
         }
 
         public IActionResult OpenRegisterDiv()

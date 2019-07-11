@@ -185,6 +185,10 @@ namespace AccountLess.Models
 
         internal List<string>[] addTwitchChannel(string userID, string twitchChannel)
         {
+            if (twitchChannel.Contains("twitch.tv/"))
+            {
+                twitchChannel = twitchChannel.Substring(twitchChannel.IndexOf("twitch.tv/") + "twitch.tv/".Length);
+            }
             twitchChannel = twitchChannel.ToLower();
             List<string> invalidChannels = new List<string>();
             List<string> validChannels = new List<string>();
