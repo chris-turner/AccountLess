@@ -151,7 +151,7 @@ namespace AccountLess.Models
            
             YouTubeSubscriptions ytSub = getYouTubeSubscribedChannelsAndVideos(userID);
 
-            if (ytSub.youtubeChannels.Any(s => s.ChannelID.Contains(youTubeChannel)))
+            if (ytSub.youtubeChannels.Any(s => s.ChannelID == youTubeChannel))
             {
                 validChannels.RemoveAll(channel => channel == youTubeChannel);
                 duplicateChannels.Add(youTubeChannel);

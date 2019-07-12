@@ -203,7 +203,7 @@ namespace AccountLess.Models
 
             twitchFollowedChannels.twitchFollowedChannels = getTwitchFollowedChannels(userID);
 
-            if (twitchFollowedChannels.twitchFollowedChannels.Any(s => s.twitchChannelName.Contains(twitchChannel)))
+            if (twitchFollowedChannels.twitchFollowedChannels.Any(s => s.twitchChannelName == twitchChannel))
             {
                 validChannels.RemoveAll(channel => channel == twitchChannel);
                 duplicateChannels.Add(twitchChannel);

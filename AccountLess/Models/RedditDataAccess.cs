@@ -36,7 +36,7 @@ namespace AccountLess.Models
             List<string> duplicateSubs = new List<string>();
             Multireddit mr = getMultireddit(userID);
 
-            if (mr.subreddits.Any(s => s.Contains(subreddit)))
+            if (mr.subreddits.Any(s => s == subreddit))
             {
                 validSubs.RemoveAll(sub => sub == subreddit);
                 duplicateSubs.Add(subreddit);
