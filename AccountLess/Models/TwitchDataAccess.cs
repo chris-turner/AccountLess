@@ -189,6 +189,10 @@ namespace AccountLess.Models
             {
                 twitchChannel = twitchChannel.Substring(twitchChannel.IndexOf("twitch.tv/") + "twitch.tv/".Length);
             }
+            if (twitchChannel.Contains("/"))
+            {
+                twitchChannel = twitchChannel.Substring(0, twitchChannel.IndexOf("/"));
+            }
             twitchChannel = twitchChannel.ToLower();
             List<string> invalidChannels = new List<string>();
             List<string> validChannels = new List<string>();

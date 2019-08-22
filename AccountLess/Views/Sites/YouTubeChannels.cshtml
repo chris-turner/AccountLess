@@ -1,5 +1,5 @@
-﻿@{ 
-   
+﻿@{
+
 }
 <div class="row">
     <div class="row">
@@ -17,65 +17,90 @@
     </div>
 </div>
 
+    <div class="row">
+        <div class="col-lg-8 col-md-8 paddingTop">
+            <div class="row">
+                <div class="col-lg-8 col-md-8" id="searchYouTubeChannelDiv">
+
+                    <span class="paddingRight">1. Search for a YouTube Channel </span>
+                    <input type="text" name="youTubeChannel" id="youTubeChannelSearch" />
+                    <button class="btn btn-sm siteButton" onclick="searchYouTubeChannel()">Search</button> 
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4" id="searchYouTubeChannelDiv">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 col-md-8">
+            <div class="row">
+                <div class="col-lg-8 col-md-8" id="searchYouTubeChannelDiv">
+                    <span class="paddingRight">2. Copy & Paste the YouTube Channel URL Below</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 @using (Html.BeginForm("addYouTubeChannel", "Sites", FormMethod.Post, new { }))
 {
-<div class="row">
-    <div class="col-lg-8 col-md-8">
-        <div class="row">
-            <div class="col-lg-8 col-md-8" id="addYouTubeChannelDiv">
+    <div class="row">
+        <div class="col-lg-8 col-md-8 paddingBottom">
+            <div class="row">
+                <div class="col-lg-8 col-md-8" id="addYouTubeChannelDiv">
 
-                <span class="paddingRight">Enter Channel URL</span>
-                <input type="text" name="youTubeChannel" id="youTubeChannel" />
-                <input type="submit" class="btn btn-sm" value="Add" />
+                    <span class="paddingRight">3. Enter Channel URL & Click Add</span>
+                    <input type="text" name="youTubeChannel" id="youTubeChannel" />
+                    <input type="submit" class="btn btn-sm siteButton" value="Add" />
+                </div>
             </div>
+            <div class="col-lg-4 col-md-4" id="addYouTubeChannelDiv">
             </div>
-        <div class="col-lg-4 col-md-4" id="addYouTubeChannelDiv">
-        </div>
         </div>
     </div>
-    }
+}
 
-    <div class="row">
-        <div class="col-lg-7 col-md-7">
-            <table class="table" id="ytChannelsTable">
-                <thead>
-                    <tr>
-                        <th scope="col">Channel</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{ if (Model.youtubeChannels.Count < 1)
+<div class="row">
+    <div class="col-lg-7 col-md-7">
+        <table class="table" id="ytChannelsTable">
+            <thead>
+                <tr>
+                    <th scope="col">Channel</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ if (Model.youtubeChannels.Count < 1)
+                    {
+                        <tr>
+                            <td>No Channels added yet. </td>
+                            <td> </td>
+                        </tr>
+
+                    }
+                    else
+                    {
+                        foreach (var ytChannel in Model.youtubeChannels)
                         {
                             <tr>
-                                <td>No Channels added yet. </td>
-                                <td> </td>
+                                <td><a href="@ytChannel.ChannelLink" target="_blank">@ytChannel.ChannelName</a></td>
+                                @using (Html.BeginForm("deleteYouTubeChannel", "Sites", FormMethod.Post, new { }))
+                                {
+                                    <td>
+                                        <input class="hidden" value="@ytChannel.ChannelID" name="youTubeChannel" id="youTubeChannel" />
+                                        <input type="submit" value="Delete" class="btn-sm btn-danger" />
+                                    </td>
+                                }
                             </tr>
-
-                        }
-                        else
-                        {
-                            foreach (var ytChannel in Model.youtubeChannels)
-                            {
-                                <tr>
-                                    <td><a href="@ytChannel.ChannelLink" target="_blank">@ytChannel.ChannelName</a></td>
-                                    @using (Html.BeginForm("deleteYouTubeChannel", "Sites", FormMethod.Post, new { }))
-                                    {
-                                        <td>
-                                            <input class="hidden" value="@ytChannel.ChannelID" name="youTubeChannel" id="youTubeChannel" />
-                                            <input type="submit" value="Delete" class="btn-sm btn-danger" />
-                                        </td>
-                                    }
-                                </tr>
-                            }
-
                         }
 
                     }
 
-                </tbody>
-            </table>
+                }
 
-        </div>
+            </tbody>
+        </table>
+
     </div>
+</div>

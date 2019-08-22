@@ -77,3 +77,21 @@ width:325px !important;
 .top-buffer {
     margin-top: 13px;
 }
+
+.siteButton {
+      background-color: lightgrey;
+}
+
+.headerbar {
+    background-color:white !important;
+
+}
+
+.headertext {
+    color: black !important;
+}
+
+.mainheadertext {
+    font-family: 'Trebuchet MS';
+    font-weight: bold;
+}

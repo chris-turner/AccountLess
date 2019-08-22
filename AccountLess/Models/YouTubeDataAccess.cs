@@ -138,10 +138,17 @@ namespace AccountLess.Models
                 }
 
             }
-            else {
+
+            else
+            {
                 invalidChannels.Add(youTubeChannel);
                 List<String>[] tempChannel = { invalidChannels, validChannels, duplicateChannels };
                 return tempChannel;
+            }
+
+            if (youTubeChannel.Contains("/"))
+            {
+                youTubeChannel = youTubeChannel.Substring(0,youTubeChannel.IndexOf("/"));
             }
 
             youTubeChannel = Regex.Replace(youTubeChannel, @"\s+", "");

@@ -1,102 +1,116 @@
-﻿
-    <div class="container paddingTop">
-        <div class="row">
-            <div class="col-lg-8 col-md-8">
-                @if (TempData["ErrorMessage"] != null)
-    {
-            <div class="loginErrorMsg">@TempData["ErrorMessage"]</div>
+﻿@{
+    ViewData["Title"] = "Home";
 
 }
-                @{if (TempData.Peek("UserID") == null)
-        {
-            if (TempData.Peek("LoginViewMode") != null && TempData["LoginViewMode"].ToString() == "Register")
+<div class="container paddingTop">
+    <div class="row">
+        <div class="col-lg-8 col-md-8">
+            @if (TempData["ErrorMessage"] != null)
             {
 
-                @using (Html.BeginForm("register", "Home", FormMethod.Post, new { }))
-    {
+                <div class="row" id="youtubeChannelAddedStatus">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="alert alert-danger alert-dismissible show" role="alert">
+                            <strong>Error</strong>:@TempData["ErrorMessage"]
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
 
-            <form>
-                <div class="row">
-                    <div class="col-lg-8 col-md-8">
-                        <div class="row top-buffer">
-                            <div class="col-lg-8 col-md-8">
-                                <input type="text" class="form-control loginInput" placeholder="username" name="username" id="username" />
-                            </div>
-                        </div>
-                        <div class="col-lg-8 col-md-8">
-                            <div class="row top-buffer">
-                                <input type="password" class="form-control loginInput" placeholder="password" name="password" id="password" />
-                            </div>
-                        </div>
-                        <div class="col-lg-8 col-md-8">
-                            <div class="row top-buffer">
-                                <button class="btn btn-secondary">create</button>
-                            </div>
-                        </div>
-                        <div class="col-lg-8 col-md-8">
-                            <div class="row top-buffer">
-                                <a asp-area="" asp-controller="Home" asp-action="OpenLoginDiv">Already have a username? Click here to sign in.</a>
-                            </div>
-                        </div>
                     </div>
                 </div>
-            </form>
-}
 
-}
-else
-{
-            @using (Html.BeginForm("login", "Home", FormMethod.Post, new { }))
-{
-            <form>
-                <div class="row">
-                    <div class="col-lg-8 col-md-8">
-                        <div class="row top-buffer">
-                            <div class="col-lg-8 col-md-8">
-                                <input type="text" placeholder="username" class="form-control loginInput" name="username" id="username" />
-                            </div>
-                        </div>
-                        <div class="col-lg-8 col-md-8">
-                            <div class="row top-buffer">
-                                <input type="password" class="form-control loginInput" placeholder="password" name="password" id="password" />
-                            </div>
-                        </div>
-                        <div class="col-lg-8 col-md-8">
-                            <div class="row top-buffer">
-                                <button class="btn btn-secondary">login</button>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 col-md-12">
-                            <div class="row top-buffer">
-                                <a asp-area="" asp-controller="Home" asp-action="OpenRegisterDiv">No username? Click here to create one. No email address required.</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+            }
+            @{if (TempData.Peek("UserID") == null)
+                {
+                    if (TempData.Peek("LoginViewMode") != null && TempData["LoginViewMode"].ToString() == "Register")
+                    {
 
-}
-            
+                        @using (Html.BeginForm("register", "Home", FormMethod.Post, new { }))
+                        {
 
-}
-            <div class="row paddingTop">
-                <div class="col-lg-12 col-md-12">
-                    Follow your favorite users and topics on popular websites without having an account there.
-                </div>
-            </div>
-}
-else
-{
-
-            <h1> Welcome, @TempData.Peek("Username"). </h1>
-            <div>
-                Follow your favorite users and topics on popular websites without having an account there. Choose a site from above.
-            </div>
-
-            @*@TempData.Peek("UserID")*@
-
-}
-                }
-            </div>
+                            <form>
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-8">
+                                        <div class="row top-buffer">
+                                            <div class="col-lg-8 col-md-8">
+                                                <input type="text" class="form-control loginInput" placeholder="username" name="username" id="username" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="row top-buffer">
+                                                <input type="password" class="form-control loginInput" placeholder="password" name="password" id="password" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="row top-buffer">
+                                                <button class="btn btn-secondary siteButton">create</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="row top-buffer">
+                                                <a asp-area="" asp-controller="Home" asp-action="OpenLoginDiv">Already have a username? Click here to sign in.</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
+                        }
+
+                    }
+                    else
+                    {
+                        @using (Html.BeginForm("login", "Home", FormMethod.Post, new { }))
+                        {
+                            <form>
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-8">
+                                        <div class="row top-buffer">
+                                            <div class="col-lg-8 col-md-8">
+                                                <input type="text" placeholder="username" class="form-control loginInput" name="username" id="username" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="row top-buffer">
+                                                <input type="password" class="form-control loginInput" placeholder="password" name="password" id="password" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="row top-buffer">
+                                                <button class="btn btn-secondary siteButton">login</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="row top-buffer">
+                                                <a asp-area="" asp-controller="Home" asp-action="OpenRegisterDiv">No username? Click here to create one. No email address required.</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        }
+
+
+                    }
+                    <div class="row paddingTop">
+                        <div class="col-lg-12 col-md-12">
+                            Follow your favorite users and topics on popular websites without having an account there.
+                        </div>
+                    </div>
+                }
+                else
+                {
+
+                    <h1> Welcome, @TempData.Peek("Username"). </h1>
+                    <div>
+                        Follow your favorite users and topics on popular websites without having an account there. Choose a site from above.
+                    </div>
+
+                    @*@TempData.Peek("UserID")*@
+
+                }
+            }
+        </div>
+    </div>
+</div>

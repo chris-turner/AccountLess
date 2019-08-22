@@ -5,6 +5,16 @@
 
 });
 
+function searchYouTubeChannel() {
+    var channelSearchTerm = $("#youTubeChannelSearch").val();
+    var url = "https://www.youtube.com/results?search_query=" + channelSearchTerm + "&sp=EgIQAg%253D%253D";
+    var win = window.open(url, '_blank');
+    win.focus();
+
+}
+
+
+
 
 //function setYoutubeSearchOption(type) {
 //    $('#youtubeSearchMode').val(type.toString());

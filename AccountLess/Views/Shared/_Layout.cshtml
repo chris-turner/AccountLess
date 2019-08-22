@@ -23,25 +23,25 @@
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top headerbar">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse mainheadertext">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">AccountLess</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand headertext mainheadertext">AccountLess</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Sites" asp-action="Reddit">Reddit</a></li>
-                    <li><a asp-area="" asp-controller="Sites" asp-action="YouTube">YouTube</a></li>
-                    <li><a asp-area="" asp-controller="Sites" asp-action="Twitch">Twitch</a></li>
+                    <li><a asp-area="" asp-controller="Sites" asp-action="Reddit" class="headertext">Reddit</a></li>
+                    <li><a asp-area="" asp-controller="Sites" asp-action="YouTube" class="headertext">YouTube</a></li>
+                    <li><a asp-area="" asp-controller="Sites" asp-action="Twitch" class="headertext">Twitch</a></li>
                     @if (TempData.Peek("UserID") != null)
                     {
-                    <li><a asp-area="" asp-controller="Home" asp-action="Logout">Logout</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Logout" class="headertext">Logout</a></li>
                     }
                 </ul>
             </div>
